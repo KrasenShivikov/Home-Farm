@@ -1,4 +1,6 @@
-# Dependencies
+.env
+.env.local
+node_modules/# Dependencies
 node_modules/
 .pnp
 .pnp.js
