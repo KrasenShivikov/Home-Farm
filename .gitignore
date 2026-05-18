@@ -1,54 +1,64 @@
 # Dependencies
 node_modules/
+.pnp
+.pnp.js
 
-# Next.js (home-farm-web)
+# Next.js
 .next/
 out/
 next-env.d.ts
 
-# Expo (home-farm-mobile)
+# Expo
 .expo/
 dist/
-web-build/
 expo-env.d.ts
-app-example
+.expo-shared/
 
-# Native generated folders
-/ios
-/android
+# Build outputs
+build/
+.turbo/
 
-# Native signing / debug artifacts
-.kotlin/
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
+# Environment variables
+.env
+.env.local
+.env.*.local
 
-# Metro
-.metro-health-check*
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.history/
 
-# Build output
-/build
-/coverage
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
+.cache/
 
 # TypeScript
 *.tsbuildinfo
 
-# Environment files
-.env
-.env*.local
-
-# Debug logs
-npm-debug.*
-yarn-debug.*
-yarn-error.*
-.pnpm-debug.log*
-
-# OS files
-.DS_Store
-*.pem
-
-# IDE / editor
-.vercel
+# Monorepo
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
