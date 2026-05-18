@@ -1,0 +1,21 @@
+{
+  "name": "home-farm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "workspaces": [
+    "home-farm-mobile",
+    "home-farm-web",
+    "home-farm-shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w home-farm-web\" \"npm run start -w home-farm-mobile\"",
+    "build": "npm run build --workspaces --if-present",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "author": "Krasen Shivikov",
+  "license": "ISC"
+}
