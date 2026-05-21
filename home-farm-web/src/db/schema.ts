@@ -126,6 +126,7 @@ export const orders = pgTable("orders", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   status: text("status").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const orderLines = pgTable("order_lines", {
