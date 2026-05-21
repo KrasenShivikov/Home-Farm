@@ -1,15 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { registerAction } from "@/actions/auth";
+import { useActionState } from "react";
 
 export default function RegisterPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsSubmitting(true);
-    setTimeout(() => setIsSubmitting(false), 800);
-  }
+  const [state, action, isPending] = useActionState(
+    async (prevState: any, formData: FormData) => await registerAction(formData),
+    null
+  );
 
   return (
     <section className="auth">
@@ -19,7 +17,8 @@ export default function RegisterPage() {
         <p className="auth-subtitle">
           Регистрирайте се, за да следите култури, реколти и поръчки.
         </p>
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form className="auth-form" action={action}>
+          {state?.error && <p className="text-red-500 font-medium">{state.error}</p>}
           <label className="field">
             Име
             <input
@@ -50,8 +49,8 @@ export default function RegisterPage() {
               autoComplete="new-password"
             />
           </label>
-          <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Моля, изчакайте..." : "Създай профил"}
+          <button className="btn btn-primary" type="submit" disabled={isPending}>
+            {isPending ? "Моля, изчакайте..." : "Създай профил"}
           </button>
         </form>
         <p className="auth-footnote">

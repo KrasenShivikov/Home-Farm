@@ -1,15 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { loginAction } from "@/actions/auth";
+import { useActionState } from "react";
 
 export default function LoginPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsSubmitting(true);
-    setTimeout(() => setIsSubmitting(false), 800);
-  }
+  const [state, action, isPending] = useActionState(
+    async (prevState: any, formData: FormData) => await loginAction(formData),
+    null
+  );
 
   return (
     <section className="auth">
@@ -19,7 +17,8 @@ export default function LoginPage() {
         <p className="auth-subtitle">
           Влезте в профила си, за да управлявате стопанството.
         </p>
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <form className="auth-form" action={action}>
+          {state?.error && <p className="text-red-500 font-medium">{state.error}</p>}
           <label className="field">
             Имейл
             <input
@@ -40,8 +39,8 @@ export default function LoginPage() {
               autoComplete="current-password"
             />
           </label>
-          <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Моля, изчакайте..." : "Вход"}
+          <button className="btn btn-primary" type="submit" disabled={isPending}>
+            {isPending ? "Моля, изчакайте..." : "Вход"}
           </button>
         </form>
         <p className="auth-footnote">

@@ -1,4 +1,9 @@
-export default function Header() {
+import { getSession } from "@/lib/session";
+import { logoutAction } from "@/actions/auth";
+
+export default async function Header() {
+  const session = await getSession();
+
   return (
     <header className="site-header">
       <div className="container flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
@@ -17,12 +22,27 @@ export default function Header() {
           <a className="nav-link" href="/">
             Начало
           </a>
-          <a className="nav-link" href="/login">
-            Вход
-          </a>
-          <a className="nav-link" href="/register">
-            Регистрация
-          </a>
+          {session ? (
+            <>
+              <span className="font-semibold text-gray-700 px-4">
+                Здравейте, {session.name}
+              </span>
+              <form action={logoutAction} style={{ display: "inline" }}>
+                <button type="submit" className="nav-link text-red-600">
+                  Изход
+                </button>
+              </form>
+            </>
+          ) : (
+            <>
+              <a className="nav-link" href="/login">
+                Вход
+              </a>
+              <a className="nav-link" href="/register">
+                Регистрация
+              </a>
+            </>
+          )}
         </nav>
       </div>
     </header>
