@@ -127,6 +127,10 @@ export const orders = pgTable("orders", {
     .references(() => users.id, { onDelete: "cascade" }),
   status: text("status").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  shippingCity: text("shipping_city"),
+  shippingStreet: text("shipping_street"),
+  shippingPostalCode: text("shipping_postal_code"),
+  shippingCountry: text("shipping_country"),
 });
 
 export const orderLines = pgTable("order_lines", {
