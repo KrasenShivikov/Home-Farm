@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { products } from "@/db/schema";
 import ProductCrudManager from "@/components/product-crud/ProductCrudManager";
 import { createProductAction, deleteProductAction, updateProductAction } from "@/actions/product-actions";
-import Link from "next/link";
+import AdminTabs from "@/components/admin/AdminTabs";
 
 export const metadata = {
   title: "Admin — Продукти",
@@ -18,12 +18,7 @@ export default async function ProductsAdminPage() {
         <p className="text-sm text-gray-600">Преглед и управление на продуктите</p>
       </div>
 
-      <div className="mb-8 flex flex-wrap gap-3">
-        <Link href="/admin" className="btn">
-          Култури
-        </Link>
-        <span className="btn btn-primary cursor-default opacity-80">Продукти</span>
-      </div>
+      <AdminTabs active="products" />
 
       <ProductCrudManager
         products={all}
