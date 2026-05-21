@@ -11,6 +11,11 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  // Admins should not see the ordinary user dashboard
+  if (session.role === "admin") {
+    redirect("/admin");
+  }
+
   const orders = await getUserOrders(session.userId);
 
   return (
