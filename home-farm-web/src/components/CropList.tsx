@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from "react";
 import SearchBar from "./SearchBar";
-import CropCard from "./CropCard";
+import CropCrudManager from "./crop-crud/CropCrudManager";
+import { createCropAction, deleteCropAction, updateCropAction } from "@/actions/crop-actions";
 
 export default function CropList({ initial }: { initial: any[] }) {
   const [query, setQuery] = useState("");
@@ -16,11 +17,7 @@ export default function CropList({ initial }: { initial: any[] }) {
   return (
     <div className="space-y-6">
       <SearchBar onChange={setQuery} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {filtered.map((c) => (
-          <CropCard key={c.id} crop={c} />
-        ))}
-      </div>
+      <CropCrudManager crops={filtered} createAction={createCropAction} updateAction={updateCropAction} deleteAction={deleteCropAction} />
     </div>
   );
 }
