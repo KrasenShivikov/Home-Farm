@@ -3,7 +3,7 @@ import { updateSession, decrypt } from "@/lib/session";
 
 const publicRoutes = ["/", "/login", "/register"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const isPublicRoute = publicRoutes.includes(request.nextUrl.pathname);
 
   // Extend cookie expiration

@@ -2,15 +2,12 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import CropEditorDialog, { type CropFormValues } from "./CropEditorDialog";
+import ProductEditorDialog, { type ProductFormValues } from "./ProductEditorDialog";
 
-export type CropRecord = {
+export type ProductRecord = {
   id: number;
   name: string;
-  variety: string | null;
-  forSale: boolean;
-  price: string | null;
-  description: string | null;
+  date: string;
 };
 
 type ActionFn = (
@@ -18,29 +15,26 @@ type ActionFn = (
   formData: FormData
 ) => Promise<{ error?: string; success?: string }>;
 
-type CropRecordActionsProps = {
-  crop: CropRecord;
-  onRequestDelete: (crop: CropRecord) => void;
+type ProductRecordActionsProps = {
+  product: ProductRecord;
+  onRequestDelete: (product: ProductRecord) => void;
   updateAction: ActionFn;
 };
 
-export default function CropRecordActions({ crop, onRequestDelete, updateAction }: CropRecordActionsProps) {
+export default function ProductRecordActions({ product, onRequestDelete, updateAction }: ProductRecordActionsProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [editSession, setEditSession] = useState(0);
 
-  const values: CropFormValues = {
-    id: crop.id,
-    name: crop.name,
-    variety: crop.variety,
-    forSale: crop.forSale,
-    price: crop.price,
-    description: crop.description,
+  const values: ProductFormValues = {
+    id: product.id,
+    name: product.name,
+    date: product.date,
   };
 
   return (
     <>
       <div className="flex flex-wrap gap-2">
-        <Link className="btn" href={`/admin/crop/${crop.id}`}>
+        <Link className="btn" href={`/admin/products/${product.id}`}>
           Детайли
         </Link>
         <button
@@ -53,17 +47,17 @@ export default function CropRecordActions({ crop, onRequestDelete, updateAction 
         >
           Редактирай
         </button>
-        <button className="btn btn-primary" type="button" onClick={() => onRequestDelete(crop)}>
+        <button className="btn btn-primary" type="button" onClick={() => onRequestDelete(product)}>
           Изтрий
         </button>
       </div>
 
-      <CropEditorDialog
-        key={`${crop.id}-${editSession}`}
+      <ProductEditorDialog
+        key={`${product.id}-${editSession}`}
         open={editOpen}
         mode="edit"
         values={values}
-        title="култура"
+        title="продукт"
         onClose={() => setEditOpen(false)}
         actionFn={updateAction}
       />
