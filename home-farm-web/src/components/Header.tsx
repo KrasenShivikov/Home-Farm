@@ -22,6 +22,11 @@ export default async function Header() {
           <a className="nav-link" href="/">
             Начало
           </a>
+          {session?.role === "admin" && (
+            <a className="nav-link font-medium text-accent" href="/admin">
+              Табло
+            </a>
+          )}
           {session ? (
             <>
               <span className="font-semibold text-gray-700 px-4">

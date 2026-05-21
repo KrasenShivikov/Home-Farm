@@ -10,7 +10,10 @@ import {
   timestamp,
   uniqueIndex,
   varchar,
+  pgEnum,
 } from "drizzle-orm/pg-core";
+
+export const roleEnum = pgEnum("user_role", ["user", "admin"]);
 
 export const users = pgTable(
   "users",
@@ -19,6 +22,7 @@ export const users = pgTable(
     name: text("name").notNull(),
     email: varchar("email", { length: 255 }).notNull(),
     passwordHash: text("password_hash").notNull(),
+    role: roleEnum("role").notNull().default("user"),
     shippingCity: text("shipping_city").notNull(),
     shippingStreet: text("shipping_street").notNull(),
     shippingPostalCode: text("shipping_postal_code"),

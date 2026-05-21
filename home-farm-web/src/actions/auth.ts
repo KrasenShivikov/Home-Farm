@@ -28,7 +28,7 @@ export async function loginAction(formData: FormData) {
     return { error: "Грешен имейл или парола." };
   }
 
-  await createSession(user.id, user.name);
+  await createSession(user.id, user.name, user.role);
   redirect("/");
 }
 
@@ -58,15 +58,16 @@ export async function registerAction(formData: FormData) {
       shippingStreet: "",
       shippingPostalCode: "",
       shippingCountry: "",
+      role: "user",
     })
-    .returning({ id: users.id, name: users.name });
+    .returning({ id: users.id, name: users.name, role: users.role });
 
   const newUser = inserted[0];
   if (!newUser) {
     return { error: "Грешка при регистрация." };
   }
 
-  await createSession(newUser.id, newUser.name);
+  await createSession(newUser.id, newUser.name, newUser.role);
   redirect("/");
 }
 
