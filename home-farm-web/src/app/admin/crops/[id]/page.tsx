@@ -1,7 +1,6 @@
 import ActivityTabs from "@/components/ActivityTabs";
 import { getCropActivities } from "@/actions/crop-activities";
 import { getCropById } from "@/actions/crop-detail";
-import PlantingManager from "@/components/plantings/PlantingManager";
 
 export default async function CropDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id: idParam } = await params;
@@ -21,8 +20,7 @@ export default async function CropDetail({ params }: { params: Promise<{ id: str
         <p className="text-sm text-gray-600">{crop.description}</p>
       </div>
 
-      <ActivityTabs plantings={plant} harvestings={harvest} sprayings={spray} wastes={waste} />
-      <PlantingManager plantings={plant} cropId={id} />
+      <ActivityTabs cropId={id} plantings={plant} harvestings={harvest} sprayings={spray} wastes={waste} />
     </section>
   );
 }

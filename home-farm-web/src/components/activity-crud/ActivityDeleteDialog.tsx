@@ -1,27 +1,38 @@
 "use client";
 
-import { deletePlantingAction } from "@/actions/planting-actions";
 import { useToast } from "@/components/ui/toast";
 import { useActionState, useEffect, useRef } from "react";
 
-type PlantingDeleteActionState = {
+type ActivityActionState = {
   error?: string;
   success?: string;
 };
 
-type PlantingDeleteDialogProps = {
+type DeleteActionFn = (formData: FormData) => Promise<ActivityActionState>;
+
+type ActivityDeleteDialogProps = {
   open: boolean;
   cropId: number;
-  plantingId: number | null;
+  activityId: number | null;
   title: string;
+  label: string;
   onClose: () => void;
+  deleteAction: DeleteActionFn;
 };
 
-export default function PlantingDeleteDialog({ open, cropId, plantingId, title, onClose }: PlantingDeleteDialogProps) {
+export default function ActivityDeleteDialog({
+  open,
+  cropId,
+  activityId,
+  title,
+  label,
+  onClose,
+  deleteAction,
+}: ActivityDeleteDialogProps) {
   const { showToast } = useToast();
   const didHandleSuccess = useRef(false);
-  const [state, action, isPending] = useActionState<PlantingDeleteActionState | null, FormData>(
-    async (_prevState, formData) => deletePlantingAction(formData),
+  const [state, action, isPending] = useActionState<ActivityActionState | null, FormData>(
+    async (_prevState, formData) => deleteAction(formData),
     null
   );
 
@@ -39,7 +50,7 @@ export default function PlantingDeleteDialog({ open, cropId, plantingId, title, 
     }
   }, [state?.success, onClose, showToast]);
 
-  if (!open || !plantingId) {
+  if (!open || !activityId) {
     return null;
   }
 
@@ -48,11 +59,11 @@ export default function PlantingDeleteDialog({ open, cropId, plantingId, title, 
       <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
         <p className="eyebrow">Изтриване</p>
         <h3 className="mt-2 text-xl font-semibold text-slate-900">Потвърдете изтриването</h3>
-        <p className="mt-2 text-sm text-slate-600">Сигурни ли сте, че искате да изтриете посева {title}?</p>
+        <p className="mt-2 text-sm text-slate-600">Сигурни ли сте, че искате да изтриете {label} {title}?</p>
 
         <form action={action} className="mt-5 flex flex-wrap justify-end gap-2">
           <input type="hidden" name="cropId" value={cropId} />
-          <input type="hidden" name="id" value={plantingId} />
+          <input type="hidden" name="id" value={activityId} />
           <button className="btn" type="button" onClick={onClose}>
             Отказ
           </button>

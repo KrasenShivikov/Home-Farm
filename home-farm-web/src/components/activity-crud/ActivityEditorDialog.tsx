@@ -1,32 +1,50 @@
 "use client";
 
-import { createPlantingAction, updatePlantingAction, type PlantingActionState } from "@/actions/planting-actions";
-import { formatDateInputValue } from "@/lib/format-date";
 import { useToast } from "@/components/ui/toast";
+import { formatDateInputValue } from "@/lib/format-date";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef } from "react";
 
-type PlantingFormValues = {
+type ActivityActionState = {
+  error?: string;
+  success?: string;
+};
+
+export type ActivityFormValues = {
   id?: number;
   date?: string;
   quantity?: string;
   description?: string | null;
 };
 
-type PlantingEditorDialogProps = {
+type ActionFn = (
+  prevState: ActivityActionState | null,
+  formData: FormData
+) => Promise<ActivityActionState>;
+
+type ActivityEditorDialogProps = {
   open: boolean;
   mode: "create" | "edit";
   cropId: number;
-  values?: PlantingFormValues;
+  values?: ActivityFormValues;
+  title: string;
   onClose: () => void;
+  actionFn: ActionFn;
 };
 
-export default function PlantingEditorDialog({ open, mode, cropId, values, onClose }: PlantingEditorDialogProps) {
+export default function ActivityEditorDialog({
+  open,
+  mode,
+  cropId,
+  values,
+  title,
+  onClose,
+  actionFn,
+}: ActivityEditorDialogProps) {
   const router = useRouter();
   const { showToast } = useToast();
   const didHandleSuccess = useRef(false);
-  const actionFn = mode === "create" ? createPlantingAction : updatePlantingAction;
-  const [state, action, isPending] = useActionState<PlantingActionState | null, FormData>(actionFn, null);
+  const [state, action, isPending] = useActionState<ActivityActionState | null, FormData>(actionFn, null);
 
   useEffect(() => {
     if (open) {
@@ -52,13 +70,11 @@ export default function PlantingEditorDialog({ open, mode, cropId, values, onClo
       <div className="w-full max-w-2xl rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>
-            <p className="eyebrow">Посеви</p>
+            <p className="eyebrow">{title}</p>
             <h3 className="text-xl font-semibold text-slate-900">
-              {mode === "create" ? "Добавяне на посев" : "Редакция на посев"}
+              {mode === "create" ? `Добавяне на ${title.toLowerCase()}` : `Редакция на ${title.toLowerCase()}`}
             </h3>
-            <p className="text-sm text-slate-600">
-              Попълнете полетата и натиснете Запази или прекратете с Отказ.
-            </p>
+            <p className="text-sm text-slate-600">Попълнете полетата и натиснете Запази или прекратете с Отказ.</p>
           </div>
           <button className="btn" type="button" onClick={onClose}>
             Отказ
