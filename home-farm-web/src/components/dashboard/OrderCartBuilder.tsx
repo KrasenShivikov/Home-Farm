@@ -132,15 +132,15 @@ export default function OrderCartBuilder({ crops, shippingDefaults }: OrderCartB
   return (
     <section className="space-y-4 rounded-2xl border bg-white p-6 shadow-sm">
       <div>
-        <p className="eyebrow">Нова поръчка</p>
+        <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Нова поръчка</p>
         <h2 className="text-xl font-semibold text-slate-900">Кошница за поръчка</h2>
         <p className="text-sm text-slate-600">Добавете няколко култури и изпратете една поръчка с много редове.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-[1.3fr_0.7fr_auto] md:items-end">
-        <label className="field">
+        <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
           Култура
-          <select value={selectedCropId ?? ""} onChange={(event) => setSelectedCropId(Number(event.target.value))}>
+          <select value={selectedCropId ?? ""} onChange={(event) => setSelectedCropId(Number(event.target.value))} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20">
             {crops.map((crop) => (
               <option key={crop.id} value={crop.id}>
                 {crop.name}
@@ -151,12 +151,12 @@ export default function OrderCartBuilder({ crops, shippingDefaults }: OrderCartB
           </select>
         </label>
 
-        <label className="field">
+        <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
           Количество
-          <input type="number" min="0.001" step="0.001" value={quantity} onChange={(event) => setQuantity(event.target.value)} />
+          <input type="number" min="0.001" step="0.001" value={quantity} onChange={(event) => setQuantity(event.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
         </label>
 
-        <button className="btn" type="button" onClick={addToCart} disabled={crops.length === 0}>
+        <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-0.5 hover:shadow-sm disabled:opacity-60" type="button" onClick={addToCart} disabled={crops.length === 0}>
           Добави в кошницата
         </button>
       </div>
@@ -190,7 +190,7 @@ export default function OrderCartBuilder({ crops, shippingDefaults }: OrderCartB
                       <td className="px-4 py-3 text-slate-700">{item.price} лв</td>
                       <td className="px-4 py-3 text-slate-700">{lineTotal} лв</td>
                       <td className="px-4 py-3 text-right">
-                        <button className="btn" type="button" onClick={() => removeFromCart(item.cropId)}>
+                        <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition-all hover:-translate-y-px hover:shadow-sm" type="button" onClick={() => removeFromCart(item.cropId)}>
                           Премахни
                         </button>
                       </td>
@@ -207,28 +207,28 @@ export default function OrderCartBuilder({ crops, shippingDefaults }: OrderCartB
               <input type="hidden" name="cartJson" value={cartJson} />
 
               <div className="grid gap-4 md:grid-cols-2">
-                <label className="field">
+                <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
                   Град за доставка
-                  <input name="shippingCity" defaultValue={shippingDefaults.shippingCity} required />
+                  <input name="shippingCity" defaultValue={shippingDefaults.shippingCity} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
                 </label>
 
-                <label className="field">
+                <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
                   Адрес / улица
-                  <input name="shippingStreet" defaultValue={shippingDefaults.shippingStreet} required />
+                  <input name="shippingStreet" defaultValue={shippingDefaults.shippingStreet} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
                 </label>
 
-                <label className="field">
+                <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
                   Пощенски код
-                  <input name="shippingPostalCode" defaultValue={shippingDefaults.shippingPostalCode} required />
+                  <input name="shippingPostalCode" defaultValue={shippingDefaults.shippingPostalCode} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
                 </label>
 
-                <label className="field">
+                <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
                   Държава
-                  <input name="shippingCountry" defaultValue={shippingDefaults.shippingCountry} required />
+                  <input name="shippingCountry" defaultValue={shippingDefaults.shippingCountry} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
                 </label>
               </div>
 
-              <button className="btn btn-primary" type="submit" disabled={isPending}>
+              <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isPending}>
                 {isPending ? "Създаване..." : "Създай поръчка"}
               </button>
             </form>

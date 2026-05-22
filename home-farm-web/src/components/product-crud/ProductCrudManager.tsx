@@ -33,11 +33,11 @@ export default function ProductCrudManager({ products, createAction, updateActio
     <section className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="eyebrow">Продукти</p>
+          <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Продукти</p>
           <h2 className="text-xl font-semibold text-slate-900">Добавяне, редакция и изтриване</h2>
           <p className="text-sm text-slate-600">Управлявайте продуктите директно от отделната продуктовата страница.</p>
         </div>
-        <button className="btn btn-primary" type="button" onClick={() => setCreateOpen(true)}>
+        <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600" type="button" onClick={() => setCreateOpen(true)}>
           Добави продукт
         </button>
       </div>
@@ -51,6 +51,8 @@ export default function ProductCrudManager({ products, createAction, updateActio
               <div>
                 <h3 className="text-lg font-semibold text-slate-900">{product.name}</h3>
                 <p className="text-sm text-slate-600">{formatBulgarianDate(product.date)}</p>
+                <p className="text-sm text-slate-600">Количество: {product.quantity}</p>
+                <p className="text-sm text-slate-600">Цена: {product.price ?? "—"}</p>
               </div>
 
               <ProductRecordActions

@@ -8,6 +8,8 @@ export type ProductRecord = {
   id: number;
   name: string;
   date: string;
+  quantity: string;
+  price: string | null;
 };
 
 type ActionFn = (
@@ -29,16 +31,18 @@ export default function ProductRecordActions({ product, onRequestDelete, updateA
     id: product.id,
     name: product.name,
     date: product.date,
+    quantity: product.quantity,
+    price: product.price ?? "",
   };
 
   return (
     <>
       <div className="flex flex-wrap gap-2">
-        <Link className="btn" href={`/admin/products/${product.id}`}>
+        <Link className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:bg-white hover:shadow-sm" href={`/admin/products/${product.id}`}>
           Детайли
         </Link>
         <button
-          className="btn"
+          className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:bg-white hover:shadow-sm"
           type="button"
           onClick={() => {
             setEditSession((value) => value + 1);
@@ -47,7 +51,7 @@ export default function ProductRecordActions({ product, onRequestDelete, updateA
         >
           Редактирай
         </button>
-        <button className="btn btn-primary" type="button" onClick={() => onRequestDelete(product)}>
+        <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)] transition-all hover:-translate-y-px hover:bg-orange-600" type="button" onClick={() => onRequestDelete(product)}>
           Изтрий
         </button>
       </div>

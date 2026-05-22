@@ -14,23 +14,29 @@ type ProductValues = {
   id: number | null;
   name: string;
   date: string;
+  quantity: string;
+  price: string;
 };
 
 function getProductValues(formData: FormData) {
   const idValue = formData.get("id");
   const name = String(formData.get("name") ?? "").trim();
   const date = String(formData.get("date") ?? "").trim();
+  const quantity = String(formData.get("quantity") ?? "").trim();
+  const price = String(formData.get("price") ?? "").trim();
 
   const id = idValue ? Number(idValue) : null;
 
-  if (!name || !date) {
-    return { error: "Името и датата са задължителни." } as const;
+  if (!name || !date || !quantity || !price) {
+    return { error: "Името, датата, количеството и цената са задължителни." } as const;
   }
 
   return {
     id,
     name,
     date,
+    quantity,
+    price,
   } as const;
 }
 
@@ -55,6 +61,8 @@ export async function createProductAction(
   await db.insert(products).values({
     name: values.name,
     date: values.date,
+    quantity: values.quantity,
+    price: values.price,
   });
 
   revalidateProductPaths(null);
@@ -81,6 +89,8 @@ export async function updateProductAction(
     .set({
       name: values.name,
       date: values.date,
+      quantity: values.quantity,
+      price: values.price,
     })
     .where(eq(products.id, values.id));
 

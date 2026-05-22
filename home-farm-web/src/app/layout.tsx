@@ -32,7 +32,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <ToastProvider>
-          <div className="app-shell">
+          <div className="app-shell min-h-screen">
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />

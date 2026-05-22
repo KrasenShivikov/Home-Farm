@@ -57,17 +57,17 @@ export default function ActivityDeleteDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 px-4 py-6">
       <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
-        <p className="eyebrow">Изтриване</p>
+        <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Изтриване</p>
         <h3 className="mt-2 text-xl font-semibold text-slate-900">Потвърдете изтриването</h3>
         <p className="mt-2 text-sm text-slate-600">Сигурни ли сте, че искате да изтриете {label} {title}?</p>
 
         <form action={action} className="mt-5 flex flex-wrap justify-end gap-2">
           <input type="hidden" name="cropId" value={cropId} />
           <input type="hidden" name="id" value={activityId} />
-          <button className="btn" type="button" onClick={onClose}>
+          <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm" type="button" onClick={onClose}>
             Отказ
           </button>
-          <button className="btn btn-primary" type="submit" disabled={isPending}>
+          <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-4 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)] transition-all hover:-translate-y-px hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isPending}>
             {isPending ? "Изтриване..." : "Изтрий"}
           </button>
         </form>

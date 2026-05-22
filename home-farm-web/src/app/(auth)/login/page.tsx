@@ -9,42 +9,33 @@ export default function LoginPage() {
     null
   );
 
+  const inputCls = "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20";
+
   return (
-    <section className="auth">
-      <div className="auth-card">
-        <p className="eyebrow">Вход</p>
-        <h1 className="auth-title">Добре дошли обратно</h1>
-        <p className="auth-subtitle">
-          Влезте в профила си, за да управлявате стопанството.
-        </p>
-        <form className="auth-form" action={action}>
-          {state?.error && <p className="text-red-500 font-medium">{state.error}</p>}
-          <label className="field">
+    <section className="py-14">
+      <div className="mx-auto grid w-full max-w-md gap-5 rounded-2xl border border-slate-200 bg-white p-9 shadow-2xl">
+        <div>
+          <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Вход</p>
+          <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-slate-900">Добре дошли обратно</h1>
+          <p className="mt-1 text-sm text-slate-500">Влезте в профила си, за да управлявате стопанството.</p>
+        </div>
+        <form className="grid gap-4" action={action}>
+          {state?.error && <p className="rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-red-600">{state.error}</p>}
+          <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
             Имейл
-            <input
-              type="email"
-              name="email"
-              placeholder="name@example.com"
-              required
-              autoComplete="email"
-            />
+            <input type="email" name="email" placeholder="name@example.com" required autoComplete="email" className={inputCls} />
           </label>
-          <label className="field">
+          <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
             Парола
-            <input
-              type="password"
-              name="password"
-              placeholder="Вашата парола"
-              required
-              autoComplete="current-password"
-            />
+            <input type="password" name="password" placeholder="Вашата парола" required autoComplete="current-password" className={inputCls} />
           </label>
-          <button className="btn btn-primary" type="submit" disabled={isPending}>
+          <button className="mt-1 w-full rounded-full bg-orange-500 py-3 text-sm font-bold text-white shadow-[0_4px_16px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isPending}>
             {isPending ? "Моля, изчакайте..." : "Вход"}
           </button>
         </form>
-        <p className="auth-footnote">
-          Нямате профил? <a href="/register">Регистрация</a>
+        <p className="text-center text-sm text-slate-500">
+          Нямате профил?{" "}
+          <a href="/register" className="font-bold text-slate-900 hover:text-orange-600">Регистрация</a>
         </p>
       </div>
     </section>

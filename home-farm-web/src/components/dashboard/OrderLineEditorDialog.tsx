@@ -81,13 +81,13 @@ export default function OrderLineEditorDialog({
       <div className="w-full max-w-2xl rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>
-            <p className="eyebrow">Поръчка</p>
+            <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Поръчка</p>
             <h3 className="text-xl font-semibold text-slate-900">
               {mode === "create" ? `Добавяне на ${title.toLowerCase()}` : `Редакция на ${title.toLowerCase()}`}
             </h3>
             <p className="text-sm text-slate-600">Изберете култура и количество за реда на поръчката.</p>
           </div>
-          <button className="btn" type="button" onClick={onClose}>
+          <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm" type="button" onClick={onClose}>
             Отказ
           </button>
         </div>
@@ -97,9 +97,9 @@ export default function OrderLineEditorDialog({
           <input type="hidden" name="lineId" value={values?.lineId ?? ""} />
 
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="field">
+            <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
               Култура
-              <select name="cropId" defaultValue={values?.cropId ?? (crops[0]?.id ?? "")} required>
+              <select name="cropId" defaultValue={values?.cropId ?? (crops[0]?.id ?? "")} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20">
                 {crops.map((crop) => (
                   <option key={crop.id} value={crop.id}>
                     {crop.name}
@@ -110,19 +110,19 @@ export default function OrderLineEditorDialog({
               </select>
             </label>
 
-            <label className="field">
+            <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
               Количество
-              <input type="number" name="quantity" min="0.001" step="0.001" defaultValue={values?.quantity ?? "1.000"} required />
+              <input type="number" name="quantity" min="0.001" step="0.001" defaultValue={values?.quantity ?? "1.000"} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
             </label>
           </div>
 
           {state?.error ? <p className="text-sm font-medium text-red-600">{state.error}</p> : null}
 
           <div className="flex flex-wrap justify-end gap-2 pt-2">
-            <button className="btn" type="button" onClick={onClose}>
+            <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm" type="button" onClick={onClose}>
               Отказ
             </button>
-            <button className="btn btn-primary" type="submit" disabled={isPending}>
+            <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)] transition-all hover:-translate-y-px hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isPending}>
               {isPending ? "Запазване..." : "Запази"}
             </button>
           </div>

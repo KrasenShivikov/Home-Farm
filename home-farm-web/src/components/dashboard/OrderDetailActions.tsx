@@ -65,7 +65,7 @@ export default function OrderDetailActions({ orderId, status }: OrderDetailActio
       {canCancel ? (
         <form action={cancelAction}>
           <input type="hidden" name="orderId" value={orderId} />
-          <button className="btn" type="submit" disabled={cancelPending}>
+          <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm disabled:opacity-60" type="submit" disabled={cancelPending}>
             {cancelPending ? "Отказване..." : "Откажи поръчка"}
           </button>
         </form>
@@ -74,7 +74,7 @@ export default function OrderDetailActions({ orderId, status }: OrderDetailActio
       {canDelete ? (
         <form action={deleteAction}>
           <input type="hidden" name="orderId" value={orderId} />
-          <button className="btn btn-primary" type="submit" disabled={deletePending}>
+          <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)] transition-all hover:-translate-y-px hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={deletePending}>
             {deletePending ? "Изтриване..." : "Изтрий поръчка"}
           </button>
         </form>

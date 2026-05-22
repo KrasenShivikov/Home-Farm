@@ -94,6 +94,8 @@ async function seed() {
     .values({
       name: "Canned Tomatoes",
       date: "2026-05-10",
+      quantity: "12.000",
+      price: "8.50",
     })
     .returning({ id: products.id });
 
@@ -102,6 +104,8 @@ async function seed() {
     .values({
       name: "Pickled Cucumbers",
       date: "2026-05-12",
+      quantity: "20.000",
+      price: "6.00",
     })
     .returning({ id: products.id });
 

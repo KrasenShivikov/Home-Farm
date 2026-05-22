@@ -54,7 +54,7 @@ export default async function AdminOrdersPage({
                     <p>Артикули: {order.totalItems}</p>
                     <p>Общо: {order.totalAmount} лв</p>
                   </div>
-                  <Link href={`/admin/orders/${order.id}`} className="btn btn-primary">
+                  <Link href={`/admin/orders/${order.id}`} className="inline-flex items-center justify-center rounded-full bg-orange-500 px-4 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)] transition-all hover:-translate-y-px hover:bg-orange-600">
                     Детайли
                   </Link>
                 </div>

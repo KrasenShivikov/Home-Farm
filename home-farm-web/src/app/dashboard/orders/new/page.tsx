@@ -20,13 +20,13 @@ export default async function NewOrderPage() {
   return (
     <section className="container py-10">
       <div className="mb-6 space-y-2">
-        <p className="eyebrow">Нова поръчка</p>
+        <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Нова поръчка</p>
         <h1 className="text-3xl font-bold text-slate-900">Създаване на поръчка</h1>
         <p className="text-sm text-slate-600">Добавете няколко култури в кошница и изпратете поръчката.</p>
       </div>
 
       <div className="mb-6 flex flex-wrap gap-3">
-        <Link href="/dashboard" className="btn">
+        <Link href="/dashboard" className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm">
           Назад към таблото
         </Link>
       </div>

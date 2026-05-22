@@ -35,11 +35,11 @@ export default function CropCrudManager({ crops, createAction, updateAction, del
     <section className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="eyebrow">Култури</p>
+          <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Култури</p>
           <h2 className="text-xl font-semibold text-slate-900">Добавяне, редакция и изтриване</h2>
           <p className="text-sm text-slate-600">Управлявайте културите директно от админ таблото.</p>
         </div>
-        <button className="btn btn-primary" type="button" onClick={() => setCreateOpen(true)}>
+        <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600" type="button" onClick={() => setCreateOpen(true)}>
           Добави култура
         </button>
       </div>

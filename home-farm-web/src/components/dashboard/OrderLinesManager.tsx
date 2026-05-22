@@ -28,7 +28,7 @@ export default function OrderLinesManager({ orderId, orderStatus, items, crops }
     <section className="space-y-4 rounded-2xl border bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="eyebrow">Редакция на редове</p>
+          <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Редакция на редове</p>
           <h2 className="text-xl font-semibold text-slate-900">Продукти в поръчката</h2>
           <p className="text-sm text-slate-600">
             {canEdit ? "Можете да добавяте и редактирате редове." : "Редовете са само за преглед."}
@@ -37,7 +37,7 @@ export default function OrderLinesManager({ orderId, orderStatus, items, crops }
 
         {canEdit ? (
           <button
-            className="btn btn-primary"
+            className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600"
             type="button"
             onClick={() => {
               setCreateSession((value) => value + 1);
@@ -76,7 +76,7 @@ export default function OrderLinesManager({ orderId, orderStatus, items, crops }
                   <td className="px-4 py-3 text-right">
                     {canEdit && item.lineId ? (
                       <button
-                        className="btn"
+                        className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition-all hover:-translate-y-px hover:shadow-sm"
                         type="button"
                         onClick={() => {
                           setEditSession((value) => value + 1);

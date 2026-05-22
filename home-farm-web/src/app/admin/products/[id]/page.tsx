@@ -29,6 +29,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       <div className="mb-6">
         <h1 className="text-2xl font-bold">{product.name}</h1>
         <p className="text-sm text-gray-600">Свързване на култури към продукта</p>
+        <p className="text-sm text-gray-600">Количество: {product.quantity}</p>
+        <p className="text-sm text-gray-600">Цена: {product.price ?? "—"}</p>
       </div>
 
       <ProductCropLinkManager productId={product.id} crops={allCrops} linkedCrops={linked} />

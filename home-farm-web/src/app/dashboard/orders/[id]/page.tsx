@@ -30,14 +30,14 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   return (
     <section className="container py-10">
       <div className="mb-6 space-y-2">
-        <p className="eyebrow">Детайли за поръчка</p>
+        <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Детайли за поръчка</p>
         <h1 className="text-3xl font-bold text-slate-900">Поръчка #{order.id}</h1>
         <p className="text-sm text-slate-600">Статус: {order.status}</p>
         <p className="text-sm text-slate-600">Дата: {formatBulgarianDate(order.createdAt)}</p>
       </div>
 
       <div className="mb-6 flex flex-wrap gap-3">
-        <Link href="/dashboard" className="btn">
+        <Link href="/dashboard" className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm">
           Назад към таблото
         </Link>
       </div>

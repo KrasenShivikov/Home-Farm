@@ -61,16 +61,16 @@ export default function ProductCropLinkManager({ productId, crops, linkedCrops }
   return (
     <section className="space-y-6">
       <div>
-        <p className="eyebrow">Състав на продукта</p>
+        <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Състав на продукта</p>
         <h2 className="text-xl font-semibold text-slate-900">Добавяне на култура към продукт</h2>
       </div>
 
       <form ref={formRef} action={action} className="grid gap-4 rounded-2xl border bg-white p-4 shadow-sm md:grid-cols-4">
         <input type="hidden" name="productId" value={productId} />
 
-        <label className="field md:col-span-2">
+        <label className="grid gap-1.5 text-sm font-semibold text-slate-700 md:col-span-2">
           Култура
-          <select name="cropId" defaultValue="" required>
+          <select name="cropId" defaultValue="" required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20">
             <option value="" disabled>
               Изберете култура
             </option>
@@ -83,13 +83,13 @@ export default function ProductCropLinkManager({ productId, crops, linkedCrops }
           </select>
         </label>
 
-        <label className="field">
+        <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
           Количество
-          <input type="number" name="quantity" min="0.001" step="0.001" required />
+          <input type="number" name="quantity" min="0.001" step="0.001" required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
         </label>
 
         <div className="flex items-end justify-end">
-          <button className="btn btn-primary w-full md:w-auto" type="submit" disabled={isPending || crops.length === 0}>
+          <button className="w-full rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600 disabled:opacity-60 md:w-auto" type="submit" disabled={isPending || crops.length === 0}>
             {isPending ? "Добавяне..." : "Добави"}
           </button>
         </div>
@@ -171,23 +171,23 @@ function LinkedCropRow({
         <form action={updateAction} className="flex flex-wrap items-end gap-2">
           <input type="hidden" name="productId" value={productId} />
           <input type="hidden" name="cropId" value={item.cropId} />
-          <label className="field min-w-40">
+          <label className="grid min-w-40 gap-1.5 text-sm font-semibold text-slate-700">
             Ново количество
-            <input type="number" name="quantity" min="0.001" step="0.001" defaultValue={item.quantity} required />
+            <input type="number" name="quantity" min="0.001" step="0.001" defaultValue={item.quantity} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
           </label>
-          <button className="btn" type="button" onClick={() => setIsEditing(false)} disabled={isUpdating}>
+          <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm disabled:opacity-60" type="button" onClick={() => setIsEditing(false)} disabled={isUpdating}>
             Отказ
           </button>
-          <button className="btn btn-primary" type="submit" disabled={isUpdating}>
+          <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)] transition-all hover:-translate-y-px hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isUpdating}>
             {isUpdating ? "Запазване..." : "Запази"}
           </button>
         </form>
       ) : (
         <div className="flex flex-wrap gap-2">
-          <button className="btn" type="button" onClick={() => setIsEditing(true)}>
+          <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm" type="button" onClick={() => setIsEditing(true)}>
             Редакция
           </button>
-          <button className="btn" type="button" onClick={() => onRequestDelete(item)}>
+          <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm" type="button" onClick={() => onRequestDelete(item)}>
             Премахни
           </button>
         </div>
@@ -240,7 +240,7 @@ function LinkedCropDeleteDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 px-4 py-6">
       <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
-        <p className="eyebrow">Премахване</p>
+        <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Премахване</p>
         <h3 className="mt-2 text-xl font-semibold text-slate-900">Потвърждение</h3>
         <p className="mt-2 text-sm text-slate-600">
           Сигурни ли сте, че искате да премахнете {item.cropName}
@@ -250,10 +250,10 @@ function LinkedCropDeleteDialog({
         <form action={removeAction} className="mt-5 flex flex-wrap justify-end gap-2">
           <input type="hidden" name="productId" value={productId} />
           <input type="hidden" name="cropId" value={item.cropId} />
-          <button className="btn" type="button" onClick={onClose} disabled={isRemoving}>
+          <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm disabled:opacity-60" type="button" onClick={onClose} disabled={isRemoving}>
             Отказ
           </button>
-          <button className="btn btn-primary" type="submit" disabled={isRemoving}>
+          <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-4 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)] transition-all hover:-translate-y-px hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isRemoving}>
             {isRemoving ? "Премахване..." : "Потвърди"}
           </button>
         </form>

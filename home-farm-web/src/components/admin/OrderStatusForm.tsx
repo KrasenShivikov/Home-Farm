@@ -43,7 +43,7 @@ export default function OrderStatusForm({ orderId, status }: OrderStatusFormProp
   return (
     <form action={action} className="space-y-3 rounded-2xl border bg-white p-4 shadow-sm">
       <div>
-        <p className="eyebrow">Статус</p>
+        <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Статус</p>
         <div className="mt-1 flex flex-wrap items-center gap-3">
           <h2 className="text-lg font-semibold text-slate-900">Промяна на статус</h2>
           <OrderStatusBadge status={status} />
@@ -63,7 +63,7 @@ export default function OrderStatusForm({ orderId, status }: OrderStatusFormProp
         </select>
       </label>
 
-      <button className="btn btn-primary" type="submit" disabled={isPending}>
+      <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isPending}>
         {isPending ? "Запазване..." : "Запази статус"}
       </button>
     </form>

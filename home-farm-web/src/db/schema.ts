@@ -106,6 +106,8 @@ export const products = pgTable("products", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   date: date("date").notNull(),
+  quantity: numeric("quantity", { precision: 12, scale: 3 }).notNull().default("1.000"),
+  price: numeric("price", { precision: 10, scale: 2 }),
 });
 
 export const cropProducts = pgTable(
