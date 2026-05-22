@@ -1,5 +1,6 @@
 "use client";
 
+import { ACTIVITY_TYPE_VALUES } from "@/lib/activity-types";
 import { useToast } from "@/components/ui/toast";
 import { formatDateInputValue } from "@/lib/format-date";
 import { useRouter } from "next/navigation";
@@ -14,6 +15,7 @@ export type ActivityFormValues = {
   id?: number;
   date?: string;
   quantity?: string;
+  type?: string;
   description?: string | null;
 };
 
@@ -85,7 +87,7 @@ export default function ActivityEditorDialog({
           <input type="hidden" name="cropId" value={cropId} />
           {mode === "edit" && <input type="hidden" name="id" value={values?.id ?? ""} />}
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-4">
             <label className="field">
               Дата
               <input type="date" name="date" defaultValue={formatDateInputValue(values?.date)} required />
@@ -93,6 +95,16 @@ export default function ActivityEditorDialog({
             <label className="field">
               Количество
               <input type="number" step="0.001" name="quantity" defaultValue={values?.quantity ?? ""} required />
+            </label>
+            <label className="field">
+              Тип
+              <select name="type" defaultValue={values?.type ?? ACTIVITY_TYPE_VALUES[0]} required>
+                {ACTIVITY_TYPE_VALUES.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </label>
             <label className="field">
               Описание

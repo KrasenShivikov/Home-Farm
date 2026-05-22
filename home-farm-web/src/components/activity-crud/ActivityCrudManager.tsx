@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ACTIVITY_TYPE_VALUES } from "@/lib/activity-types";
 import { formatBulgarianDate } from "@/lib/format-date";
 import ActivityEditorDialog, { type ActivityFormValues } from "./ActivityEditorDialog";
 import ActivityRecordActions, { type ActivityRecord } from "./ActivityRecordActions";
@@ -42,6 +43,7 @@ export default function ActivityCrudManager({
   const createValues: ActivityFormValues = {
     date: "",
     quantity: "",
+    type: ACTIVITY_TYPE_VALUES[0],
     description: "",
   };
 
@@ -66,6 +68,7 @@ export default function ActivityCrudManager({
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <div className="text-sm font-medium text-slate-900">{formatBulgarianDate(record.date)}</div>
+                <div className="mt-1 text-sm text-slate-600">Тип: {record.type}</div>
                 <div className="mt-1 text-sm text-slate-600">Количество: {record.quantity}</div>
                 {record.description && <div className="mt-2 text-sm text-slate-700">{record.description}</div>}
               </div>

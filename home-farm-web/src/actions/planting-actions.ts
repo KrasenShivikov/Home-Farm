@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { plantings } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { ACTIVITY_TYPE_VALUES, type ActivityType } from "@/lib/activity-types";
 
 export type PlantingActionState = {
   error?: string;
@@ -15,6 +16,7 @@ function getPlantingValues(formData: FormData) {
   const cropIdValue = formData.get("cropId");
   const date = String(formData.get("date") ?? "").trim();
   const quantity = String(formData.get("quantity") ?? "").trim();
+  const typeValue = String(formData.get("type") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
 
   const id = idValue ? Number(idValue) : null;
@@ -28,11 +30,16 @@ function getPlantingValues(formData: FormData) {
     return { error: "Датата и количеството са задължителни." } as const;
   }
 
+  const type = (ACTIVITY_TYPE_VALUES as readonly string[]).includes(typeValue)
+    ? (typeValue as ActivityType)
+    : ACTIVITY_TYPE_VALUES[0];
+
   return {
     id,
     cropId,
     date,
     quantity,
+    type,
     description: description || null,
   } as const;
 }
@@ -51,6 +58,7 @@ export async function createPlantingAction(
     cropId: values.cropId,
     date: values.date,
     quantity: values.quantity,
+    type: values.type,
     description: values.description,
     createdFrom: "manual",
   });
@@ -79,6 +87,7 @@ export async function updatePlantingAction(
     .set({
       date: values.date,
       quantity: values.quantity,
+      type: values.type,
       description: values.description,
     })
     .where(eq(plantings.id, values.id));

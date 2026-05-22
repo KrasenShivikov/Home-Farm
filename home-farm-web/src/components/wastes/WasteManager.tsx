@@ -7,6 +7,7 @@ type Waste = {
   id: number;
   date: string;
   quantity: string;
+  type: string;
   description: string | null;
 };
 

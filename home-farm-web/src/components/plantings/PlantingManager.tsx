@@ -4,7 +4,7 @@ import { createPlantingAction, deletePlantingAction, updatePlantingAction } from
 import ActivityCrudManager from "@/components/activity-crud/ActivityCrudManager";
 
 type PlantingManagerProps = {
-  plantings: { id: number; date: string; quantity: string; description: string | null }[];
+  plantings: { id: number; date: string; quantity: string; type: string; description: string | null }[];
   cropId: number;
 };
 

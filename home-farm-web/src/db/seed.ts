@@ -122,6 +122,7 @@ async function seed() {
     {
       date: "2026-03-12",
       quantity: "120.000",
+      type: "корен",
       cropId: tomato.id,
       createdFrom: "seed",
       description: "Spring planting batch.",
@@ -129,6 +130,7 @@ async function seed() {
     {
       date: "2026-03-15",
       quantity: "80.000",
+      type: "корен",
       cropId: cucumber.id,
       createdFrom: "seed",
       description: "Early cucumber beds.",
@@ -173,6 +175,7 @@ async function seed() {
     {
       date: "2026-05-09",
       quantity: "6.000",
+      type: "кг",
       cropId: tomato.id,
       createdFrom: "seed",
       description: "Sorting losses.",

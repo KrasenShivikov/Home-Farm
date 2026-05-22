@@ -12,8 +12,10 @@ import {
   varchar,
   pgEnum,
 } from "drizzle-orm/pg-core";
+import { ACTIVITY_TYPE_VALUES } from "@/lib/activity-types";
 
 export const roleEnum = pgEnum("user_role", ["user", "admin"]);
+export const activityTypeEnum = pgEnum("activity_type", ACTIVITY_TYPE_VALUES);
 
 export const users = pgTable(
   "users",
@@ -46,6 +48,7 @@ export const wastes = pgTable("wastes", {
   id: serial("id").primaryKey(),
   date: date("date").notNull(),
   quantity: numeric("quantity", { precision: 12, scale: 3 }).notNull(),
+  type: activityTypeEnum("type").notNull().default("корен"),
   cropId: integer("crop_id")
     .notNull()
     .references(() => crops.id, { onDelete: "cascade" }),
@@ -60,6 +63,7 @@ export const plantings = pgTable("plantings", {
   id: serial("id").primaryKey(),
   date: date("date").notNull(),
   quantity: numeric("quantity", { precision: 12, scale: 3 }).notNull(),
+  type: activityTypeEnum("type").notNull().default("корен"),
   cropId: integer("crop_id")
     .notNull()
     .references(() => crops.id, { onDelete: "cascade" }),

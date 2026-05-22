@@ -7,6 +7,7 @@ export type ActivityRecord = {
   id: number;
   date: string;
   quantity: string;
+  type: string;
   description: string | null;
 };
 
@@ -37,6 +38,7 @@ export default function ActivityRecordActions({
     id: record.id,
     date: record.date,
     quantity: record.quantity,
+    type: record.type,
     description: record.description,
   };
 
