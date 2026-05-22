@@ -19,6 +19,12 @@ type CartEntry = {
 
 type OrderCartBuilderProps = {
   crops: OrderableCrop[];
+  shippingDefaults: {
+    shippingCity: string;
+    shippingStreet: string;
+    shippingPostalCode: string;
+    shippingCountry: string;
+  };
 };
 
 function formatQuantity(value: string) {
@@ -30,7 +36,7 @@ function formatQuantity(value: string) {
   return numericValue.toFixed(3);
 }
 
-export default function OrderCartBuilder({ crops }: OrderCartBuilderProps) {
+export default function OrderCartBuilder({ crops, shippingDefaults }: OrderCartBuilderProps) {
   const { showToast } = useToast();
   const formRef = useRef<HTMLFormElement | null>(null);
   const [selectedCropId, setSelectedCropId] = useState<number | null>(crops[0]?.id ?? null);
@@ -197,8 +203,31 @@ export default function OrderCartBuilder({ crops }: OrderCartBuilderProps) {
 
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm font-medium text-slate-700">Обща стойност: {cartTotal.toFixed(2)} лв</p>
-            <form ref={formRef} action={action}>
+            <form ref={formRef} action={action} className="space-y-4">
               <input type="hidden" name="cartJson" value={cartJson} />
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="field">
+                  Град за доставка
+                  <input name="shippingCity" defaultValue={shippingDefaults.shippingCity} required />
+                </label>
+
+                <label className="field">
+                  Адрес / улица
+                  <input name="shippingStreet" defaultValue={shippingDefaults.shippingStreet} required />
+                </label>
+
+                <label className="field">
+                  Пощенски код
+                  <input name="shippingPostalCode" defaultValue={shippingDefaults.shippingPostalCode} required />
+                </label>
+
+                <label className="field">
+                  Държава
+                  <input name="shippingCountry" defaultValue={shippingDefaults.shippingCountry} required />
+                </label>
+              </div>
+
               <button className="btn btn-primary" type="submit" disabled={isPending}>
                 {isPending ? "Създаване..." : "Създай поръчка"}
               </button>

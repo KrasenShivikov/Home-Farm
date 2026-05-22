@@ -59,6 +59,24 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
 
         <OrderStatusForm orderId={order.id} status={order.status} />
 
+        <div className="border-t pt-4">
+          <h3 className="text-lg font-semibold text-slate-900">Данни за доставка</h3>
+          <div className="mt-2 text-sm text-slate-700">
+            <p>
+              <strong>Град:</strong> {order.shippingCity ?? "-"}
+            </p>
+            <p>
+              <strong>Адрес:</strong> {order.shippingStreet ?? "-"}
+            </p>
+            <p>
+              <strong>Пощ. код:</strong> {order.shippingPostalCode ?? "-"}
+            </p>
+            <p>
+              <strong>Държава:</strong> {order.shippingCountry ?? "-"}
+            </p>
+          </div>
+        </div>
+
         <div className="overflow-hidden rounded-xl border">
           <table className="min-w-full divide-y divide-slate-200 text-sm">
             <thead className="bg-slate-50 text-left text-slate-600">

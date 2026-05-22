@@ -1,6 +1,9 @@
 import { getOrderableCrops } from "@/actions/user-dashboard";
+import { db } from "@/db";
+import { users } from "@/db/schema";
 import OrderCartBuilder from "@/components/dashboard/OrderCartBuilder";
 import { getSession } from "@/lib/session";
+import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -12,6 +15,7 @@ export default async function NewOrderPage() {
   }
 
   const orderableCrops = await getOrderableCrops();
+  const [user] = await db.select().from(users).where(eq(users.id, session.userId)).limit(1);
 
   return (
     <section className="container py-10">
@@ -27,7 +31,15 @@ export default async function NewOrderPage() {
         </Link>
       </div>
 
-      <OrderCartBuilder crops={orderableCrops} />
+      <OrderCartBuilder
+        crops={orderableCrops}
+        shippingDefaults={{
+          shippingCity: user?.shippingCity ?? "",
+          shippingStreet: user?.shippingStreet ?? "",
+          shippingPostalCode: user?.shippingPostalCode ?? "",
+          shippingCountry: user?.shippingCountry ?? "",
+        }}
+      />
     </section>
   );
 }

@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { crops, orderLines, orders } from "@/db/schema";
+import { crops, orderLines, orders, users } from "@/db/schema";
 import { and, desc, eq } from "drizzle-orm";
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
@@ -22,6 +22,10 @@ export type UserOrder = {
   createdAt: string;
   totalItems: number;
   totalAmount: string;
+  shippingCity?: string | null;
+  shippingStreet?: string | null;
+  shippingPostalCode?: string | null;
+  shippingCountry?: string | null;
   items: UserOrderItem[];
 };
 
@@ -31,6 +35,10 @@ export type UserOrderDetail = {
   createdAt: string;
   totalItems: number;
   totalAmount: string;
+  shippingCity?: string | null;
+  shippingStreet?: string | null;
+  shippingPostalCode?: string | null;
+  shippingCountry?: string | null;
   items: UserOrderItem[];
 };
 
@@ -50,6 +58,10 @@ type JoinedOrderRow = {
   orderId: number;
   status: string;
   createdAt: Date | string;
+  shippingCity?: string | null;
+  shippingStreet?: string | null;
+  shippingPostalCode?: string | null;
+  shippingCountry?: string | null;
   lineId?: number;
   cropId?: number;
   cropName: string;
@@ -71,6 +83,10 @@ function buildOrderFromRows(rows: JoinedOrderRow[]) {
         createdAt: new Date(row.createdAt).toISOString(),
         totalItems: 0,
         totalAmount: "0.00",
+        shippingCity: row.shippingCity ?? null,
+        shippingStreet: row.shippingStreet ?? null,
+        shippingPostalCode: row.shippingPostalCode ?? null,
+        shippingCountry: row.shippingCountry ?? null,
         items: [],
       });
     }
@@ -107,6 +123,10 @@ export async function getUserOrders(userId: number): Promise<UserOrder[]> {
       orderId: orders.id,
       status: orders.status,
       createdAt: orders.createdAt,
+      shippingCity: orders.shippingCity,
+      shippingStreet: orders.shippingStreet,
+      shippingPostalCode: orders.shippingPostalCode,
+      shippingCountry: orders.shippingCountry,
       lineId: orderLines.id,
       cropId: crops.id,
       cropName: crops.name,
@@ -129,6 +149,10 @@ export async function getUserOrderById(userId: number, orderId: number): Promise
       orderId: orders.id,
       status: orders.status,
       createdAt: orders.createdAt,
+      shippingCity: orders.shippingCity,
+      shippingStreet: orders.shippingStreet,
+      shippingPostalCode: orders.shippingPostalCode,
+      shippingCountry: orders.shippingCountry,
       lineId: orderLines.id,
       cropId: crops.id,
       cropName: crops.name,
@@ -378,6 +402,31 @@ export async function createOrderAction(_prevState: { error?: string; success?: 
 
   const normalizedCart: Array<{ cropId: number; quantity: string; price: string }> = [];
 
+  const shippingCityInput = String(formData.get("shippingCity") ?? "").trim();
+  const shippingStreetInput = String(formData.get("shippingStreet") ?? "").trim();
+  const shippingPostalCodeInput = String(formData.get("shippingPostalCode") ?? "").trim();
+  const shippingCountryInput = String(formData.get("shippingCountry") ?? "").trim();
+
+  let shippingCity = shippingCityInput;
+  let shippingStreet = shippingStreetInput;
+  let shippingPostalCode = shippingPostalCodeInput;
+  let shippingCountry = shippingCountryInput;
+
+  if (!shippingCity || !shippingStreet || !shippingPostalCode || !shippingCountry) {
+    const [user] = await db.select().from(users).where(eq(users.id, session.userId)).limit(1);
+
+    if (user) {
+      shippingCity ||= user.shippingCity;
+      shippingStreet ||= user.shippingStreet;
+      shippingPostalCode ||= user.shippingPostalCode ?? "";
+      shippingCountry ||= user.shippingCountry ?? "";
+    }
+  }
+
+  if (!shippingCity || !shippingStreet || !shippingPostalCode || !shippingCountry) {
+    return { error: "Попълнете данните за доставка." };
+  }
+
   for (const item of cartItems) {
     if (!Number.isInteger(item.cropId) || item.cropId <= 0) {
       return { error: "Кошницата съдържа невалидна култура." };
@@ -414,6 +463,10 @@ export async function createOrderAction(_prevState: { error?: string; success?: 
     .values({
       userId: session.userId,
       status: "Pending",
+      shippingCity,
+      shippingStreet,
+      shippingPostalCode,
+      shippingCountry,
     })
     .returning({ id: orders.id });
 

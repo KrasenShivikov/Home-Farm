@@ -27,6 +27,10 @@ export type AdminOrder = {
   createdAt: string;
   totalItems: number;
   totalAmount: string;
+  shippingCity?: string | null;
+  shippingStreet?: string | null;
+  shippingPostalCode?: string | null;
+  shippingCountry?: string | null;
   items: AdminOrderItem[];
 };
 
@@ -37,6 +41,10 @@ type JoinedOrderRow = {
   userEmail: string;
   status: string;
   createdAt: Date | string;
+  shippingCity?: string | null;
+  shippingStreet?: string | null;
+  shippingPostalCode?: string | null;
+  shippingCountry?: string | null;
   lineId?: number;
   cropId?: number;
   cropName: string;
@@ -65,6 +73,10 @@ function buildOrdersFromRows(rows: JoinedOrderRow[]) {
         createdAt: new Date(row.createdAt).toISOString(),
         totalItems: 0,
         totalAmount: "0.00",
+        shippingCity: row.shippingCity ?? null,
+        shippingStreet: row.shippingStreet ?? null,
+        shippingPostalCode: row.shippingPostalCode ?? null,
+        shippingCountry: row.shippingCountry ?? null,
         items: [],
       });
     }
@@ -138,6 +150,10 @@ export async function getAdminOrders(filters: AdminOrdersFilter = {}): Promise<A
       userEmail: users.email,
       status: orders.status,
       createdAt: orders.createdAt,
+      shippingCity: orders.shippingCity,
+      shippingStreet: orders.shippingStreet,
+      shippingPostalCode: orders.shippingPostalCode,
+      shippingCountry: orders.shippingCountry,
       lineId: orderLines.id,
       cropId: crops.id,
       cropName: crops.name,
@@ -164,6 +180,10 @@ export async function getAdminOrderById(orderId: number): Promise<AdminOrder | n
       userEmail: users.email,
       status: orders.status,
       createdAt: orders.createdAt,
+      shippingCity: orders.shippingCity,
+      shippingStreet: orders.shippingStreet,
+      shippingPostalCode: orders.shippingPostalCode,
+      shippingCountry: orders.shippingCountry,
       lineId: orderLines.id,
       cropId: crops.id,
       cropName: crops.name,

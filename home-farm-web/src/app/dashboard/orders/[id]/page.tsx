@@ -55,6 +55,24 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </div>
         </div>
 
+        <div className="border-t pt-4">
+          <h3 className="text-lg font-semibold text-slate-900">Данни за доставка</h3>
+          <div className="mt-2 text-sm text-slate-700">
+            <p>
+              <strong>Град:</strong> {order.shippingCity ?? "-"}
+            </p>
+            <p>
+              <strong>Адрес:</strong> {order.shippingStreet ?? "-"}
+            </p>
+            <p>
+              <strong>Пощ. код:</strong> {order.shippingPostalCode ?? "-"}
+            </p>
+            <p>
+              <strong>Държава:</strong> {order.shippingCountry ?? "-"}
+            </p>
+          </div>
+        </div>
+
         <OrderLinesManager orderId={order.id} orderStatus={order.status} items={order.items} crops={orderableCrops} />
 
         <OrderDetailActions orderId={order.id} status={order.status} />
