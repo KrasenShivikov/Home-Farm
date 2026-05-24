@@ -1,3 +1,5 @@
+import { formatOrderStatus } from "@/lib/order-statuses";
+
 type OrderStatusBadgeProps = {
   status: string;
 };
@@ -12,5 +14,5 @@ const statusStyles: Record<string, string> = {
 export default function OrderStatusBadge({ status }: OrderStatusBadgeProps) {
   const badgeClassName = statusStyles[status] ?? "bg-slate-100 text-slate-800 border-slate-200";
 
-  return <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${badgeClassName}`}>{status}</span>;
+  return <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${badgeClassName}`}>{formatOrderStatus(status)}</span>;
 }

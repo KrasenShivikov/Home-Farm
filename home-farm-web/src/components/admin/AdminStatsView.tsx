@@ -10,11 +10,21 @@ type AdminStatsViewProps = {
   endDate: string | null;
   initialMainTab: MainTab;
   initialCatalogTab: CatalogTab;
+  initialOrdersTab: OrdersTab;
 };
 
 type MainTab = "catalog" | "orders";
 type CatalogTab = "summary" | "crops" | "products";
 type OrdersTab = "status" | "products" | "users";
+type TotalsChartValue = {
+  label: string;
+  value: number;
+  tone: "emerald" | "rose" | "sky" | "amber" | "slate";
+};
+type RankedChartItem = {
+  label: string;
+  value: number;
+};
 
 function formatStatNumber(value: string | number, fractionDigits = 2) {
   return Number(value || 0).toFixed(fractionDigits);
@@ -41,31 +51,33 @@ export default function AdminStatsView({
   endDate,
   initialMainTab,
   initialCatalogTab,
+  initialOrdersTab,
 }: AdminStatsViewProps) {
   const [mainTab, setMainTab] = useState<MainTab>(initialMainTab);
   const [catalogTab, setCatalogTab] = useState<CatalogTab>(initialCatalogTab);
 
   const totalsChartValues = useMemo(
     () => [
-      { label: "Общо производство", value: Number(stats.totals.totalProductionValue) },
-      { label: "Загуби", value: Number(stats.totals.totalWastesValue) },
-      { label: "Използвани култури", value: Number(stats.totals.totalUsedCropsValue) },
-      { label: "Продукти", value: Number(stats.totals.totalProductsValue) },
-    ],
+      { label: "Общо производство", value: Number(stats.totals.totalProductionValue), tone: "emerald" },
+      { label: "Загуби", value: Number(stats.totals.totalWastesValue), tone: "rose" },
+      { label: "Използвани култури", value: Number(stats.totals.totalUsedCropsValue), tone: "sky" },
+      { label: "Продукти", value: Number(stats.totals.totalProductsValue), tone: "amber" },
+      { label: "Разходи", value: Number(stats.totals.totalExpencesValue), tone: "slate" },
+    ] satisfies TotalsChartValue[],
     [stats.totals]
   );
 
   return (
     <div>
-      <div className="mb-5 flex flex-wrap gap-1.5 rounded-full border border-slate-200/80 bg-white/65 p-1.5 backdrop-blur-sm w-fit">
+      <div className="mb-5 flex w-fit flex-wrap gap-1.5 rounded-full border border-emerald-900/10 bg-white/80 p-1.5 shadow-sm backdrop-blur-sm">
         {(["catalog", "orders"] as const).map((key) => (
           <button
             key={key}
             type="button"
             onClick={() => setMainTab(key)}
             className={mainTab === key
-              ? "rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)]"
-              : "rounded-full px-5 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-white/80 hover:text-slate-900"
+              ? "rounded-full bg-emerald-600 px-6 py-2.5 text-sm font-bold text-white shadow-[0_6px_16px_rgba(5,150,105,0.24)]"
+              : "rounded-full px-6 py-2.5 text-sm font-semibold text-slate-500 transition-colors hover:bg-white/85 hover:text-slate-900"
             }
           >
             {key === "catalog" ? "Култури/продукти" : "Поръчки"}
@@ -75,7 +87,7 @@ export default function AdminStatsView({
 
       {mainTab === "catalog" ? (
         <>
-          <div className="mb-5 flex flex-wrap gap-1.5 rounded-full border border-slate-200 bg-slate-50 p-1">
+          <div className="mb-6 flex w-fit flex-wrap gap-1.5 rounded-full border border-emerald-900/10 bg-white/80 p-1.5 shadow-sm backdrop-blur-sm">
             {(["summary", "crops", "products"] as const).map((key) => {
               const labels = { summary: "Общо", crops: "По култури", products: "По продукти" };
               return (
@@ -84,8 +96,8 @@ export default function AdminStatsView({
                   type="button"
                   onClick={() => setCatalogTab(key)}
                   className={catalogTab === key
-                    ? "rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(234,88,12,0.22)]"
-                    : "rounded-full px-5 py-2 text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900"
+                    ? "rounded-full bg-emerald-600 px-6 py-2.5 text-sm font-bold text-white shadow-[0_6px_16px_rgba(5,150,105,0.24)]"
+                    : "rounded-full px-6 py-2.5 text-sm font-semibold text-slate-500 transition-colors hover:bg-white/85 hover:text-slate-900"
                   }
                 >
                   {labels[key]}
@@ -95,31 +107,52 @@ export default function AdminStatsView({
           </div>
 
           <form method="get" className="mb-6 flex flex-wrap items-end gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
-            <input type="hidden" name="mainTab" value={mainTab} />
+            <input type="hidden" name="mainTab" value="catalog" />
             <input type="hidden" name="catalogTab" value={catalogTab} />
             <label className="flex flex-col gap-1 text-[0.75rem] font-bold uppercase tracking-widest text-slate-400">
               Начална дата
-              <input className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal normal-case tracking-normal text-slate-900 transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" type="date" name="startDate" defaultValue={startDate ?? undefined} />
+              <input className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal normal-case tracking-normal text-slate-900 transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" type="date" name="startDate" defaultValue={startDate ?? undefined} />
             </label>
             <label className="flex flex-col gap-1 text-[0.75rem] font-bold uppercase tracking-widest text-slate-400">
               Крайна дата
-              <input className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal normal-case tracking-normal text-slate-900 transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" type="date" name="endDate" defaultValue={endDate ?? undefined} />
+              <input className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal normal-case tracking-normal text-slate-900 transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" type="date" name="endDate" defaultValue={endDate ?? undefined} />
             </label>
-            <button className="rounded-full bg-orange-500 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(234,88,12,0.28)] transition-all hover:-translate-y-px hover:bg-orange-600" type="submit">Приложи</button>
-            <a className="rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-700 transition-all hover:-translate-y-px hover:shadow-sm" href="/admin/stats">Нулирай</a>
+            <button className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(5,150,105,0.28)] transition-all hover:-translate-y-px hover:bg-emerald-700" type="submit">Приложи</button>
+            <a className="rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-700 transition-all hover:-translate-y-px hover:shadow-sm" href={`/admin/stats?mainTab=catalog&catalogTab=${catalogTab}`}>Нулирай</a>
           </form>
 
           {catalogTab === "summary" && (
-            <section className="mb-8">
-              <h2 className="text-xl font-semibold mb-2">Общо</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="rounded-2xl border bg-white p-4 shadow-sm">
-                  <h4 className="font-semibold mb-2">Резюме (стойности)</h4>
-                  <TotalsChart values={totalsChartValues} />
+            <section className="mb-8 space-y-5">
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Общо</p>
+                  <h2 className="text-2xl font-bold text-slate-950">Финансово резюме</h2>
                 </div>
-                <div className="rounded-2xl border bg-white p-4 shadow-sm">
-                  <h4 className="font-semibold">Резюме (числа)</h4>
+                <div className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm">
+                  {startDate || endDate ? `${startDate ?? "начало"} - ${endDate ?? "днес"}` : "Всички периоди"}
+                </div>
+              </div>
+
+              <SummaryKpis stats={stats} />
+
+              <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.05fr)_minmax(28rem,0.95fr)]">
+                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                  <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-4">
+                    <p className="text-[0.68rem] font-bold uppercase tracking-[0.24em] text-slate-400">Стойности</p>
+                    <h4 className="mt-1 text-lg font-semibold text-slate-950">Разпределение по категории</h4>
+                  </div>
+                  <div className="p-5">
+                  <TotalsChart values={totalsChartValues} />
+                  </div>
+                </div>
+                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                  <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-4">
+                    <p className="text-[0.68rem] font-bold uppercase tracking-[0.24em] text-slate-400">Числа</p>
+                    <h4 className="mt-1 text-lg font-semibold text-slate-950">Обобщени показатели</h4>
+                  </div>
+                  <div className="p-5">
                   <SummaryNumbers stats={stats} />
+                  </div>
                 </div>
               </div>
             </section>
@@ -140,42 +173,122 @@ export default function AdminStatsView({
           )}
         </>
       ) : (
-        <OrdersView stats={stats} startDate={startDate} endDate={endDate} />
+        <OrdersView
+          stats={stats}
+          startDate={startDate}
+          endDate={endDate}
+          initialOrdersTab={initialOrdersTab}
+        />
       )}
     </div>
   );
 }
 
-function TotalsChart({ values }: { values: { label: string; value: number }[] }) {
-  const max = Math.max(...values.map((v) => v.value), 1);
+function SummaryKpis({ stats }: { stats: AdminStats }) {
+  const finalValue = Number(stats.totals.endTotalValue);
+  const expencesValue = Number(stats.totals.totalExpencesValue);
+  const addedValue = Number(stats.totals.totalProductAddedValue);
 
   return (
-    <svg width="100%" height={values.length * 28} viewBox={`0 0 600 ${values.length * 28}`} preserveAspectRatio="none">
-      {values.map((v, i) => {
-        const w = (v.value / max) * 560;
+    <div className="grid gap-3 md:grid-cols-3">
+      <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 shadow-sm">
+        <div className="text-xs font-bold uppercase tracking-widest text-emerald-700">Крайна стойност</div>
+        <div className="mt-2 text-3xl font-extrabold tabular-nums text-emerald-900">{formatStatNumber(finalValue)}</div>
+      </div>
+      <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 shadow-sm">
+        <div className="text-xs font-bold uppercase tracking-widest text-emerald-700">Добавена стойност</div>
+        <div className="mt-2 text-2xl font-extrabold tabular-nums text-emerald-900">{formatStatNumber(addedValue)}</div>
+      </div>
+      <div className="rounded-2xl border border-rose-100 bg-rose-50 px-5 py-4 shadow-sm">
+        <div className="text-xs font-bold uppercase tracking-widest text-rose-700">Разходи</div>
+        <div className="mt-2 text-2xl font-extrabold tabular-nums text-rose-900">-{formatStatNumber(expencesValue)}</div>
+      </div>
+    </div>
+  );
+}
+
+function TotalsChart({ values }: { values: TotalsChartValue[] }) {
+  const max = Math.max(...values.map((v) => v.value), 1);
+  const toneClasses: Record<TotalsChartValue["tone"], string> = {
+    amber: "bg-amber-500",
+    emerald: "bg-emerald-500",
+    rose: "bg-rose-500",
+    sky: "bg-sky-500",
+    slate: "bg-slate-500",
+  };
+
+  return (
+    <div className="space-y-4">
+      {values.map((v) => {
+        const width = `${Math.max((v.value / max) * 100, v.value > 0 ? 2 : 0)}%`;
         return (
-          <g key={v.label} transform={`translate(0, ${i * 28})`}>
-            <text x={0} y={14} fontSize={12} fill="#0f172a">{v.label}</text>
-            <rect x={120} y={4} width={w} height={20} fill="#0ea5ff" rx={4} />
-            <text x={120 + w + 8} y={18} fontSize={12} fill="#0f172a">{v.value.toFixed(2)}</text>
-          </g>
+          <div key={v.label} className="grid gap-2 sm:grid-cols-[10rem_1fr_6rem] sm:items-center">
+            <div className="text-sm font-medium text-slate-700">{v.label}</div>
+            <div className="h-3 overflow-hidden rounded-full bg-slate-100">
+              <div className={`h-full rounded-full ${toneClasses[v.tone]}`} style={{ width }} />
+            </div>
+            <div className="text-right text-sm font-bold tabular-nums text-slate-900">{formatStatNumber(v.value)}</div>
+          </div>
         );
       })}
-    </svg>
+    </div>
+  );
+}
+
+function RankedBarChart({
+  emptyLabel,
+  items,
+  tone = "bg-emerald-500",
+}: {
+  emptyLabel: string;
+  items: RankedChartItem[];
+  tone?: string;
+}) {
+  const max = Math.max(...items.map((item) => item.value), 1);
+
+  if (items.length === 0) {
+    return <div className="rounded-xl bg-slate-50 px-4 py-5 text-sm text-slate-500">{emptyLabel}</div>;
+  }
+
+  return (
+    <div className="space-y-3">
+      {items.map((item) => {
+        const width = `${Math.max((item.value / max) * 100, item.value > 0 ? 2 : 0)}%`;
+
+        return (
+          <div key={item.label} className="grid gap-2 sm:grid-cols-[minmax(8rem,12rem)_1fr_6rem] sm:items-center">
+            <div className="truncate text-sm font-medium text-slate-700" title={item.label}>
+              {item.label}
+            </div>
+            <div className="h-3 overflow-hidden rounded-full bg-slate-100">
+              <div className={`h-full rounded-full ${tone}`} style={{ width }} />
+            </div>
+            <div className="text-right text-sm font-bold tabular-nums text-slate-900">{formatStatNumber(item.value)}</div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
 function SummaryNumbers({ stats }: { stats: AdminStats }) {
-  const rows: { label: string; qty: string; value: string; highlight?: boolean }[] = [
-    { label: "Общо производство", qty: stats.totals.totalProductionQty, value: stats.totals.totalProductionValue },
-    { label: "Загуби", qty: stats.totals.totalWastesQty, value: stats.totals.totalWastesValue },
-    { label: "Използвани култури", qty: stats.totals.totalUsedCropsQty, value: stats.totals.totalUsedCropsValue },
-    { label: "Продукти", qty: stats.totals.totalProductsQty, value: stats.totals.totalProductsValue },
-    { label: "Добавена стойност", qty: "", value: stats.totals.totalProductAddedValue },
+  const rows: { label: string; qty: string; value: string; kind?: "positive" | "negative" | "neutral" }[] = [
+    { label: "Общо производство", qty: stats.totals.totalProductionQty, value: stats.totals.totalProductionValue, kind: "positive" },
+    { label: "Загуби", qty: stats.totals.totalWastesQty, value: stats.totals.totalWastesValue, kind: "negative" },
+    { label: "Използвани култури", qty: stats.totals.totalUsedCropsQty, value: stats.totals.totalUsedCropsValue, kind: "neutral" },
+    { label: "Продукти", qty: stats.totals.totalProductsQty, value: stats.totals.totalProductsValue, kind: "positive" },
+    { label: "Добавена стойност", qty: "", value: stats.totals.totalProductAddedValue, kind: "positive" },
+    { label: "Разходи", qty: "", value: stats.totals.totalExpencesValue, kind: "negative" },
   ];
+  const valueClasses = {
+    negative: "text-rose-700",
+    neutral: "text-slate-900",
+    positive: "text-emerald-700",
+  };
 
   return (
-    <div className="mt-2 overflow-x-auto">
+    <div>
+      <div className="overflow-x-auto">
       <table className="w-full table-auto text-sm">
         <thead>
           <tr className="border-b border-slate-200">
@@ -189,14 +302,18 @@ function SummaryNumbers({ stats }: { stats: AdminStats }) {
             <tr key={r.label} className="transition-colors hover:bg-slate-50/60">
               <td className="py-2.5 pr-4 text-sm text-slate-600">{r.label}</td>
               <td className="py-2.5 px-4 text-right text-sm font-semibold tabular-nums text-slate-900">{r.qty ? formatStatNumber(r.qty) : "—"}</td>
-              <td className="py-2.5 pl-4 text-right text-sm font-semibold tabular-nums text-slate-900">{formatStatNumber(r.value)}</td>
+              <td className={`py-2.5 pl-4 text-right text-sm font-bold tabular-nums ${valueClasses[r.kind ?? "neutral"]}`}>
+                {r.kind === "negative" && Number(r.value || 0) > 0 ? "-" : ""}
+                {formatStatNumber(r.value)}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <div className="mt-3 flex items-center justify-between rounded-xl bg-emerald-50 px-4 py-3">
-        <span className="text-sm font-semibold text-emerald-800">Крайна обща стойност</span>
-        <span className="text-lg font-extrabold tabular-nums text-emerald-800">{formatStatNumber(stats.totals.endTotalValue)}</span>
+      </div>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-slate-950 px-5 py-4 text-white">
+        <span className="text-sm font-bold uppercase tracking-widest text-emerald-200">Крайна обща стойност</span>
+        <span className="text-2xl font-extrabold tabular-nums">{formatStatNumber(stats.totals.endTotalValue)}</span>
       </div>
     </div>
   );
@@ -204,10 +321,20 @@ function SummaryNumbers({ stats }: { stats: AdminStats }) {
 
 function CropTable({ stats }: { stats: AdminStats }) {
   const { page, pageCount, pageItems, pageSize, setPage } = usePagination(stats.crops, 10);
+  const chartItems = useMemo(
+    () =>
+      stats.crops
+        .map((crop) => ({ label: crop.name, value: Number(crop.harvestValue || 0) }))
+        .filter((item) => item.value > 0)
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 8),
+    [stats.crops]
+  );
 
   return (
     <div className="space-y-3">
       <CropStatsGroupedPanel
+        chartItems={chartItems}
         cropsCount={stats.crops.length}
         onPageChange={setPage}
         page={page}
@@ -264,6 +391,7 @@ function CropTable({ stats }: { stats: AdminStats }) {
 }
 
 function CropStatsGroupedPanel({
+  chartItems,
   cropsCount,
   onPageChange,
   page,
@@ -271,6 +399,7 @@ function CropStatsGroupedPanel({
   pageItems,
   pageSize,
 }: {
+  chartItems: RankedChartItem[];
   cropsCount: number;
   onPageChange: (page: number) => void;
   page: number;
@@ -302,6 +431,16 @@ function CropStatsGroupedPanel({
             <div className="text-xs font-bold uppercase tracking-widest text-slate-400">Изп. продукти</div>
             <div className="mt-1 text-lg font-bold tabular-nums text-slate-900">{formatStatNumber(usedValue)}</div>
           </div>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-4">
+          <p className="text-[0.68rem] font-bold uppercase tracking-[0.24em] text-slate-400">Графика</p>
+          <h4 className="mt-1 text-lg font-semibold text-slate-950">Топ култури по стойност на реколтата</h4>
+        </div>
+        <div className="p-5">
+          <RankedBarChart emptyLabel="Няма стойност за реколта." items={chartItems} tone="bg-emerald-500" />
         </div>
       </div>
 
@@ -403,8 +542,8 @@ function CropStatsPanel({
           <table className="w-full table-auto text-sm">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/90">
-                {["Култура", "Засадено", "Прибрано", "Стойност", "Отпадъци", "Стойност", "Ср. реколта", "Изп. продукти"].map((heading) => (
-                  <th key={heading} className="px-5 py-3 text-left text-[0.7rem] font-bold uppercase tracking-wide text-slate-400 whitespace-nowrap">
+                {["Култура", "Засадено", "Прибрано", "Стойност", "Отпадъци", "Стойност", "Ср. реколта", "Изп. продукти"].map((heading, index) => (
+                  <th key={`${heading}-${index}`} className="px-5 py-3 text-left text-[0.7rem] font-bold uppercase tracking-wide text-slate-400 whitespace-nowrap">
                     {heading}
                   </th>
                 ))}
@@ -443,9 +582,48 @@ function CropStatsPanel({
 
 function ProductTable({ stats }: { stats: AdminStats }) {
   const { page, pageCount, pageItems, pageSize, setPage } = usePagination(stats.products, 10);
+  const chartItems = useMemo(
+    () =>
+      stats.products
+        .map((product) => ({ label: product.name, value: Number(product.value || 0) }))
+        .filter((item) => item.value > 0)
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 8),
+    [stats.products]
+  );
+  const addedValueItems = useMemo(
+    () =>
+      stats.products
+        .map((product) => ({ label: product.name, value: Number(product.addedValue || 0) }))
+        .filter((item) => item.value > 0)
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 8),
+    [stats.products]
+  );
 
   return (
     <div className="space-y-3">
+      <div className="grid gap-4 xl:grid-cols-2">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-4">
+            <p className="text-[0.68rem] font-bold uppercase tracking-[0.24em] text-slate-400">Графика</p>
+            <h4 className="mt-1 text-lg font-semibold text-slate-950">Топ продукти по стойност</h4>
+          </div>
+          <div className="p-5">
+            <RankedBarChart emptyLabel="Няма стойност за продукти." items={chartItems} tone="bg-amber-500" />
+          </div>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-4">
+            <p className="text-[0.68rem] font-bold uppercase tracking-[0.24em] text-slate-400">Графика</p>
+            <h4 className="mt-1 text-lg font-semibold text-slate-950">Топ продукти по добавена стойност</h4>
+          </div>
+          <div className="p-5">
+            <RankedBarChart emptyLabel="Няма добавена стойност." items={addedValueItems} tone="bg-emerald-500" />
+          </div>
+        </div>
+      </div>
+
       <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
         <table className="w-full min-w-[900px] table-auto text-sm">
           <thead>
@@ -516,12 +694,14 @@ function OrdersView({
   stats,
   startDate,
   endDate,
+  initialOrdersTab,
 }: {
   stats: AdminStats;
   startDate: string | null;
   endDate: string | null;
+  initialOrdersTab: OrdersTab;
 }) {
-  const [ordersTab, setOrdersTab] = useState<OrdersTab>("status");
+  const [ordersTab, setOrdersTab] = useState<OrdersTab>(initialOrdersTab);
   const labels: Record<OrdersTab, string> = {
     status: "По статус",
     products: "Продукти",
@@ -530,15 +710,15 @@ function OrdersView({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-1.5 rounded-full border border-slate-200 bg-slate-50 p-1">
+      <div className="flex w-fit flex-wrap gap-1.5 rounded-full border border-emerald-900/10 bg-white/80 p-1.5 shadow-sm backdrop-blur-sm">
         {(["status", "products", "users"] as const).map((key) => (
           <button
             key={key}
             type="button"
             onClick={() => setOrdersTab(key)}
             className={ordersTab === key
-              ? "rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(234,88,12,0.22)]"
-              : "rounded-full px-5 py-2 text-sm font-semibold text-slate-500 transition-colors hover:text-slate-900"
+              ? "rounded-full bg-emerald-600 px-6 py-2.5 text-sm font-bold text-white shadow-[0_6px_16px_rgba(5,150,105,0.24)]"
+              : "rounded-full px-6 py-2.5 text-sm font-semibold text-slate-500 transition-colors hover:bg-white/85 hover:text-slate-900"
             }
           >
             {labels[key]}
@@ -547,16 +727,17 @@ function OrdersView({
       </div>
       <form method="get" className="mb-6 flex flex-wrap items-end gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
         <input type="hidden" name="mainTab" value="orders" />
+        <input type="hidden" name="ordersTab" value={ordersTab} />
         <label className="flex flex-col gap-1 text-[0.75rem] font-bold uppercase tracking-widest text-slate-400">
           Начална дата
-          <input className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal normal-case tracking-normal text-slate-900 transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" type="date" name="startDate" defaultValue={startDate ?? undefined} />
+          <input className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal normal-case tracking-normal text-slate-900 transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" type="date" name="startDate" defaultValue={startDate ?? undefined} />
         </label>
         <label className="flex flex-col gap-1 text-[0.75rem] font-bold uppercase tracking-widest text-slate-400">
           Крайна дата
-          <input className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal normal-case tracking-normal text-slate-900 transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" type="date" name="endDate" defaultValue={endDate ?? undefined} />
+          <input className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal normal-case tracking-normal text-slate-900 transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" type="date" name="endDate" defaultValue={endDate ?? undefined} />
         </label>
-        <button className="rounded-full bg-orange-500 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(234,88,12,0.28)] transition-all hover:-translate-y-px hover:bg-orange-600" type="submit">Приложи</button>
-        <a className="rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-700 transition-all hover:-translate-y-px hover:shadow-sm" href="/admin/stats?mainTab=orders">Нулирай</a>
+        <button className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(5,150,105,0.28)] transition-all hover:-translate-y-px hover:bg-emerald-700" type="submit">Приложи</button>
+        <a className="rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-700 transition-all hover:-translate-y-px hover:shadow-sm" href={`/admin/stats?mainTab=orders&ordersTab=${ordersTab}`}>Нулирай</a>
       </form>
       {ordersTab === "status" ? (
       <>
@@ -606,7 +787,7 @@ function OrdersStatusPanel({ stats }: { stats: AdminStats }) {
               {formatOrderStatusLabel(status.status)}
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-orange-50 px-3 py-1 text-sm font-semibold text-orange-700">
+              <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-700">
                 {status.ordersCount} поръчки
               </span>
               <span className="rounded-full bg-emerald-50 px-3 py-1 text-sm font-semibold tabular-nums text-emerald-700">
@@ -836,7 +1017,7 @@ function OrdersByUserView({ stats }: { stats: AdminStats }) {
       <label className="mb-3 flex min-w-64 max-w-sm flex-col gap-1 text-[0.75rem] font-bold uppercase tracking-widest text-slate-400">
         Търсене
         <input
-          className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal normal-case tracking-normal text-slate-900 transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20"
+          className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-normal normal-case tracking-normal text-slate-900 transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
           onChange={(event) => setUserSearch(event.target.value)}
           placeholder="Име или номер"
           type="search"
@@ -869,7 +1050,7 @@ function OrdersByUserView({ stats }: { stats: AdminStats }) {
                 <p className="text-xs text-slate-500">#{user.userId}</p>
               </div>
               <div className="flex flex-wrap items-center gap-2 text-sm">
-                <span className="rounded-full bg-orange-50 px-3 py-1 font-semibold text-orange-700">
+                <span className="rounded-full bg-emerald-50 px-3 py-1 font-semibold text-emerald-700">
                   {user.ordersCount} поръчки
                 </span>
                 <span className="rounded-full bg-slate-100 px-3 py-1 font-semibold text-slate-700">

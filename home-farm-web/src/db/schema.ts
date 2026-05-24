@@ -110,6 +110,22 @@ export const products = pgTable("products", {
   price: numeric("price", { precision: 10, scale: 2 }),
 });
 
+export const expencesType = pgTable("expences_type", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+});
+
+export const expences = pgTable("expences", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  expencesTypeId: integer("expences_type_id")
+    .notNull()
+    .references(() => expencesType.id, { onDelete: "restrict" }),
+  description: text("description"),
+  date: date("date").notNull(),
+  value: numeric("value", { precision: 10, scale: 2 }),
+});
+
 export const cropProducts = pgTable(
   "crop_products",
   {

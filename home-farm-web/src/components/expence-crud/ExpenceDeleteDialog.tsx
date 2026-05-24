@@ -1,27 +1,35 @@
 "use client";
 
 import { useToast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef } from "react";
 
-type ProductActionState = {
+type ExpenceActionState = {
   error?: string;
   success?: string;
 };
 
-type DeleteActionFn = (formData: FormData) => Promise<ProductActionState>;
+type DeleteActionFn = (formData: FormData) => Promise<ExpenceActionState>;
 
-type ProductDeleteDialogProps = {
+type ExpenceDeleteDialogProps = {
   open: boolean;
-  productId: number | null;
+  expenceId: number | null;
   title: string;
   onClose: () => void;
   deleteAction: DeleteActionFn;
 };
 
-export default function ProductDeleteDialog({ open, productId, title, onClose, deleteAction }: ProductDeleteDialogProps) {
+export default function ExpenceDeleteDialog({
+  open,
+  expenceId,
+  title,
+  onClose,
+  deleteAction,
+}: ExpenceDeleteDialogProps) {
+  const router = useRouter();
   const { showToast } = useToast();
   const didHandleSuccess = useRef(false);
-  const [state, action, isPending] = useActionState<ProductActionState | null, FormData>(
+  const [state, action, isPending] = useActionState<ExpenceActionState | null, FormData>(
     async (_prevState, formData) => deleteAction(formData),
     null
   );
@@ -36,11 +44,12 @@ export default function ProductDeleteDialog({ open, productId, title, onClose, d
     if (state?.success && !didHandleSuccess.current) {
       didHandleSuccess.current = true;
       showToast(state.success, "success");
+      router.refresh();
       onClose();
     }
-  }, [state?.success, onClose, showToast]);
+  }, [state?.success, onClose, router, showToast]);
 
-  if (!open || !productId) {
+  if (!open || !expenceId) {
     return null;
   }
 
@@ -52,14 +61,24 @@ export default function ProductDeleteDialog({ open, productId, title, onClose, d
         <p className="mt-2 text-sm text-slate-600">Сигурни ли сте, че искате да изтриете {title}?</p>
 
         <form action={action} className="mt-5 flex flex-wrap justify-end gap-2">
-          <input type="hidden" name="id" value={productId} />
-          <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm" type="button" onClick={onClose}>
+          <input type="hidden" name="id" value={expenceId} />
+          <button
+            className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm"
+            type="button"
+            onClick={onClose}
+          >
             Отказ
           </button>
-          <button className="inline-flex items-center justify-center rounded-full bg-rose-600 px-4 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(225,29,72,0.25)] transition-all hover:-translate-y-px hover:bg-rose-700 disabled:opacity-60" type="submit" disabled={isPending}>
+          <button
+            className="inline-flex items-center justify-center rounded-full bg-rose-600 px-4 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(225,29,72,0.25)] transition-all hover:-translate-y-px hover:bg-rose-700 disabled:opacity-60"
+            type="submit"
+            disabled={isPending}
+          >
             {isPending ? "Изтриване..." : "Изтрий"}
           </button>
         </form>
+
+        {state?.error && <p className="mt-3 text-sm font-medium text-red-600">{state.error}</p>}
       </div>
     </div>
   );

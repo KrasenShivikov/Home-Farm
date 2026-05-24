@@ -81,7 +81,7 @@ export default function ProfileForm({ initial }: ProfileFormProps) {
       </div>
 
       <div className="flex gap-3">
-        <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isPending}>
+        <button className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(5,150,105,0.3)] transition-all hover:-translate-y-0.5 hover:bg-emerald-700 disabled:opacity-60" type="submit" disabled={isPending}>
           {isPending ? "Запазване..." : "Запази профил"}
         </button>
       </div>

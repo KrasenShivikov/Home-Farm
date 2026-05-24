@@ -47,7 +47,7 @@ export default function CreateOrderForm({ crops }: CreateOrderFormProps) {
       <form ref={formRef} action={action} className="grid gap-4 md:grid-cols-[1.3fr_0.7fr_auto] md:items-end">
         <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
           Култура
-          <select name="cropId" defaultValue="" required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20">
+          <select name="cropId" defaultValue="" required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
             <option value="" disabled>
               Изберете култура
             </option>
@@ -55,7 +55,7 @@ export default function CreateOrderForm({ crops }: CreateOrderFormProps) {
               <option key={crop.id} value={crop.id}>
                 {crop.name}
                 {crop.variety ? ` — ${crop.variety}` : ""}
-                {crop.price ? ` (${crop.price} лв)` : ""}
+                {crop.price ? ` (${crop.price} €)` : ""}
               </option>
             ))}
           </select>
@@ -63,10 +63,10 @@ export default function CreateOrderForm({ crops }: CreateOrderFormProps) {
 
         <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
           Количество
-          <input type="number" name="quantity" min="0.001" step="0.001" required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
+          <input type="number" name="quantity" min="0.001" step="0.001" required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
         </label>
 
-        <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isPending || crops.length === 0}>
+        <button className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(5,150,105,0.3)] transition-all hover:-translate-y-0.5 hover:bg-emerald-700 disabled:opacity-60" type="submit" disabled={isPending || crops.length === 0}>
           {isPending ? "Създаване..." : "Създай поръчка"}
         </button>
       </form>

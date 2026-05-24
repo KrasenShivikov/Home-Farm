@@ -10,27 +10,27 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Keep gradient background for app shell – not expressible as a single Tailwind class */
+/* Keep the app shell background centralized because the layered gradient is not a Tailwind utility. */
 .app-shell {
   min-height: 100vh;
   background:
-    radial-gradient(ellipse 70% 50% at top left, rgba(232, 92, 38, 0.12), transparent),
-    radial-gradient(ellipse 55% 60% at 15% 65%, rgba(12, 86, 77, 0.1), transparent),
-    linear-gradient(160deg, #f5f2ed 0%, #eef1f3 100%);
+    radial-gradient(ellipse 70% 50% at top left, rgba(5, 150, 105, 0.12), transparent),
+    radial-gradient(ellipse 55% 60% at 15% 65%, rgba(20, 184, 166, 0.1), transparent),
+    linear-gradient(160deg, #f7f8f3 0%, #edf4f1 48%, #eef1f3 100%);
 }
 
-/* ─── Container – one custom class kept for consistency ─────────── */
+/* One custom container class keeps page widths consistent across app and admin screens. */
 .container {
   width: min(1120px, 94vw);
   margin: 0 auto;
 }
 
-/* logo-mark gradient – not expressible as a single Tailwind class */
+/* Brand mark gradient. */
 .logo-mark {
   width: 42px;
   height: 42px;
   border-radius: 14px;
-  background: linear-gradient(140deg, #0d6b60 0%, #0c4a3f 40%, #e85c26 100%);
-  box-shadow: 0 8px 20px rgba(12, 86, 77, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  background: linear-gradient(140deg, #047857 0%, #0f766e 48%, #d97706 100%);
+  box-shadow: 0 8px 20px rgba(4, 120, 87, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.18);
   flex-shrink: 0;
 }

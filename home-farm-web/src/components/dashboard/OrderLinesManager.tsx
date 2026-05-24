@@ -25,19 +25,19 @@ export default function OrderLinesManager({ orderId, orderStatus, items, crops }
   const canEdit = orderStatus === "Pending";
 
   return (
-    <section className="space-y-4 rounded-2xl border bg-white p-6 shadow-sm">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="flex flex-wrap items-end justify-between gap-3 border-b border-slate-100 bg-slate-50/80 px-5 py-4">
         <div>
-          <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Редакция на редове</p>
-          <h2 className="text-xl font-semibold text-slate-900">Продукти в поръчката</h2>
-          <p className="text-sm text-slate-600">
+          <p className="text-[0.68rem] font-bold uppercase tracking-[0.24em] text-slate-400">Редове</p>
+          <h2 className="mt-1 text-xl font-bold text-slate-950">Продукти в поръчката</h2>
+          <p className="mt-1 text-sm text-slate-600">
             {canEdit ? "Можете да добавяте и редактирате редове." : "Редовете са само за преглед."}
           </p>
         </div>
 
         {canEdit ? (
           <button
-            className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600"
+            className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_12px_rgba(5,150,105,0.24)] transition-all hover:-translate-y-px hover:bg-emerald-700"
             type="button"
             onClick={() => {
               setCreateSession((value) => value + 1);
@@ -49,54 +49,54 @@ export default function OrderLinesManager({ orderId, orderStatus, items, crops }
         ) : null}
       </div>
 
-      <div className="overflow-hidden rounded-xl border">
-        <table className="min-w-full divide-y divide-slate-200 text-sm">
-          <thead className="bg-slate-50 text-left text-slate-600">
-            <tr>
-              <th className="px-4 py-3 font-medium">Култура</th>
-              <th className="px-4 py-3 font-medium">Количество</th>
-              <th className="px-4 py-3 font-medium">Цена</th>
-              <th className="px-4 py-3 font-medium">Сума</th>
-              <th className="px-4 py-3 font-medium" />
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200 bg-white">
-            {items.map((item) => {
-              const lineTotal = (Number(item.quantity) * Number(item.price)).toFixed(2);
+      {items.length === 0 ? (
+        <div className="px-5 py-10 text-center text-sm text-slate-500">Няма добавени продукти.</div>
+      ) : (
+        <div className="divide-y divide-slate-100">
+          {items.map((item) => {
+            const lineTotal = (Number(item.quantity) * Number(item.price)).toFixed(2);
 
-              return (
-                <tr key={item.lineId ?? `${orderId}-${item.cropName}-${item.quantity}`}>
-                  <td className="px-4 py-3 text-slate-900">
-                    {item.cropName}
-                    {item.cropVariety ? <span className="text-slate-500"> — {item.cropVariety}</span> : null}
-                  </td>
-                  <td className="px-4 py-3 text-slate-700">{item.quantity}</td>
-                  <td className="px-4 py-3 text-slate-700">{item.price} лв</td>
-                  <td className="px-4 py-3 text-slate-700">{lineTotal} лв</td>
-                  <td className="px-4 py-3 text-right">
-                    {canEdit && item.lineId ? (
-                      <button
-                        className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition-all hover:-translate-y-px hover:shadow-sm"
-                        type="button"
-                        onClick={() => {
-                          setEditSession((value) => value + 1);
-                          setEditTarget({
-                            lineId: item.lineId,
-                            cropId: item.cropId,
-                            quantity: item.quantity,
-                          });
-                        }}
-                      >
-                        Редактирай
-                      </button>
-                    ) : null}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+            return (
+              <div key={item.lineId ?? `${orderId}-${item.cropName}-${item.quantity}`} className="grid gap-3 px-5 py-4 sm:grid-cols-[1fr_7rem_7rem_7rem_auto] sm:items-center">
+                <div className="min-w-0">
+                  <div className="truncate font-semibold text-slate-950">{item.cropName}</div>
+                  <div className="truncate text-sm text-slate-500">{item.cropVariety || "Без сорт"}</div>
+                </div>
+                <div className="rounded-xl bg-slate-50 px-3 py-2 text-sm">
+                  <div className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-slate-400">Кол.</div>
+                  <div className="font-bold tabular-nums text-slate-900">{Number(item.quantity || 0).toFixed(3)}</div>
+                </div>
+                <div className="rounded-xl bg-slate-50 px-3 py-2 text-sm">
+                  <div className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-slate-400">Цена</div>
+                  <div className="font-bold tabular-nums text-slate-900">{Number(item.price || 0).toFixed(2)} €</div>
+                </div>
+                <div className="rounded-xl bg-emerald-50 px-3 py-2 text-sm">
+                  <div className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-emerald-600">Сума</div>
+                  <div className="font-bold tabular-nums text-emerald-900">{lineTotal} €</div>
+                </div>
+                <div className="sm:text-right">
+                  {canEdit && item.lineId ? (
+                    <button
+                      className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition-all hover:-translate-y-px hover:border-slate-400 hover:shadow-sm"
+                      type="button"
+                      onClick={() => {
+                        setEditSession((value) => value + 1);
+                        setEditTarget({
+                          lineId: item.lineId,
+                          cropId: item.cropId,
+                          quantity: item.quantity,
+                        });
+                      }}
+                    >
+                      Редактирай
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       <OrderLineEditorDialog
         key={`create-${orderId}-${createSession}`}

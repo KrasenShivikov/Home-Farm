@@ -70,7 +70,7 @@ export default function ProductCropLinkManager({ productId, crops, linkedCrops }
 
         <label className="grid gap-1.5 text-sm font-semibold text-slate-700 md:col-span-2">
           Култура
-          <select name="cropId" defaultValue="" required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20">
+          <select name="cropId" defaultValue="" required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
             <option value="" disabled>
               Изберете култура
             </option>
@@ -85,11 +85,11 @@ export default function ProductCropLinkManager({ productId, crops, linkedCrops }
 
         <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
           Количество
-          <input type="number" name="quantity" min="0.001" step="0.001" required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
+          <input type="number" name="quantity" min="0.001" step="0.001" required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
         </label>
 
         <div className="flex items-end justify-end">
-          <button className="w-full rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600 disabled:opacity-60 md:w-auto" type="submit" disabled={isPending || crops.length === 0}>
+          <button className="w-full rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(5,150,105,0.3)] transition-all hover:-translate-y-0.5 hover:bg-emerald-700 disabled:opacity-60 md:w-auto" type="submit" disabled={isPending || crops.length === 0}>
             {isPending ? "Добавяне..." : "Добави"}
           </button>
         </div>
@@ -173,12 +173,12 @@ function LinkedCropRow({
           <input type="hidden" name="cropId" value={item.cropId} />
           <label className="grid min-w-40 gap-1.5 text-sm font-semibold text-slate-700">
             Ново количество
-            <input type="number" name="quantity" min="0.001" step="0.001" defaultValue={item.quantity} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
+            <input type="number" name="quantity" min="0.001" step="0.001" defaultValue={item.quantity} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
           </label>
           <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm disabled:opacity-60" type="button" onClick={() => setIsEditing(false)} disabled={isUpdating}>
             Отказ
           </button>
-          <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)] transition-all hover:-translate-y-px hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isUpdating}>
+          <button className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(5,150,105,0.25)] transition-all hover:-translate-y-px hover:bg-emerald-700 disabled:opacity-60" type="submit" disabled={isUpdating}>
             {isUpdating ? "Запазване..." : "Запази"}
           </button>
         </form>
@@ -253,7 +253,7 @@ function LinkedCropDeleteDialog({
           <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm disabled:opacity-60" type="button" onClick={onClose} disabled={isRemoving}>
             Отказ
           </button>
-          <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-4 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)] transition-all hover:-translate-y-px hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isRemoving}>
+          <button className="inline-flex items-center justify-center rounded-full bg-rose-600 px-4 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(225,29,72,0.25)] transition-all hover:-translate-y-px hover:bg-rose-700 disabled:opacity-60" type="submit" disabled={isRemoving}>
             {isRemoving ? "Премахване..." : "Потвърди"}
           </button>
         </form>

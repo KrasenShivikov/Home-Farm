@@ -35,7 +35,7 @@ export default function ActivityTabs({
               type="button"
               onClick={() => setTab(key)}
               className={active
-                ? "rounded-xl bg-orange-500 px-5 py-2 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)]"
+                ? "rounded-xl bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(5,150,105,0.25)]"
                 : "rounded-xl px-5 py-2 text-sm font-semibold text-slate-500 transition-colors hover:bg-white hover:text-slate-900"
               }
             >

@@ -2,8 +2,9 @@
 
 import { db } from "@/db";
 import { crops, orderLines, orders, users } from "@/db/schema";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, sql, type SQL } from "drizzle-orm";
 import { getSession } from "@/lib/session";
+import { ORDER_STATUSES } from "@/lib/order-statuses";
 import { redirect } from "next/navigation";
 
 export type UserOrderItem = {
@@ -52,6 +53,12 @@ export type OrderableCrop = {
 export type CartItemInput = {
   cropId: number;
   quantity: string;
+};
+
+export type DashboardOrdersFilter = {
+  startDate?: string;
+  endDate?: string;
+  status?: string;
 };
 
 type JoinedOrderRow = {
@@ -117,7 +124,28 @@ function buildOrderFromRows(rows: JoinedOrderRow[]) {
   return Array.from(grouped.values());
 }
 
-export async function getUserOrders(userId: number): Promise<UserOrder[]> {
+function isOrderStatus(value: string): value is (typeof ORDER_STATUSES)[number] {
+  return (ORDER_STATUSES as readonly string[]).includes(value);
+}
+
+export async function getUserOrders(userId: number, filters: DashboardOrdersFilter = {}): Promise<UserOrder[]> {
+  const conditions: SQL[] = [eq(orders.userId, userId)];
+  const startDate = filters.startDate?.trim();
+  const endDate = filters.endDate?.trim();
+  const status = filters.status?.trim();
+
+  if (startDate) {
+    conditions.push(sql`${orders.createdAt}::date >= ${startDate}`);
+  }
+
+  if (endDate) {
+    conditions.push(sql`${orders.createdAt}::date <= ${endDate}`);
+  }
+
+  if (status && isOrderStatus(status)) {
+    conditions.push(eq(orders.status, status));
+  }
+
   const rows = await db
     .select({
       orderId: orders.id,
@@ -137,7 +165,7 @@ export async function getUserOrders(userId: number): Promise<UserOrder[]> {
     .from(orders)
     .leftJoin(orderLines, eq(orderLines.orderId, orders.id))
     .leftJoin(crops, eq(crops.id, orderLines.cropId))
-    .where(eq(orders.userId, userId))
+    .where(and(...conditions))
     .orderBy(desc(orders.id));
 
   return buildOrderFromRows(rows as JoinedOrderRow[]);
@@ -489,6 +517,57 @@ export async function createOrderAction(_prevState: { error?: string; success?: 
   }
 
   redirect("/dashboard");
+}
+
+export async function updateOrderShippingAction(
+  _prevState: { error?: string; success?: string } | null,
+  formData: FormData
+) {
+  const session = await getSession();
+
+  if (!session) {
+    return { error: "Трябва да влезете в системата." };
+  }
+
+  const orderId = Number(formData.get("orderId"));
+  const shippingCity = String(formData.get("shippingCity") ?? "").trim();
+  const shippingStreet = String(formData.get("shippingStreet") ?? "").trim();
+  const shippingPostalCode = String(formData.get("shippingPostalCode") ?? "").trim();
+  const shippingCountry = String(formData.get("shippingCountry") ?? "").trim();
+
+  if (!Number.isInteger(orderId) || orderId <= 0) {
+    return { error: "Невалидна поръчка." };
+  }
+
+  if (!shippingCity || !shippingStreet || !shippingPostalCode || !shippingCountry) {
+    return { error: "Попълнете данните за доставка." };
+  }
+
+  const [order] = await db
+    .select({ id: orders.id, status: orders.status })
+    .from(orders)
+    .where(and(eq(orders.id, orderId), eq(orders.userId, session.userId)))
+    .limit(1);
+
+  if (!order) {
+    return { error: "Поръчката не е намерена." };
+  }
+
+  if (order.status !== "Pending") {
+    return { error: "Можете да редактирате адрес само за чакащи поръчки." };
+  }
+
+  await db
+    .update(orders)
+    .set({
+      shippingCity,
+      shippingStreet,
+      shippingPostalCode,
+      shippingCountry,
+    })
+    .where(eq(orders.id, orderId));
+
+  return { success: "Адресът за доставка е обновен." };
 }
 
 export async function cancelOrderAction(_prevState: { error?: string; success?: string } | null, formData: FormData) {

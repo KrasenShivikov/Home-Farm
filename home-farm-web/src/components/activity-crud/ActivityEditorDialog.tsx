@@ -90,15 +90,15 @@ export default function ActivityEditorDialog({
           <div className="grid gap-4 md:grid-cols-4">
             <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
               Дата
-              <input type="date" name="date" defaultValue={formatDateInputValue(values?.date)} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
+              <input type="date" name="date" defaultValue={formatDateInputValue(values?.date)} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
             </label>
             <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
               Количество
-              <input type="number" step="0.001" name="quantity" defaultValue={values?.quantity ?? ""} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
+              <input type="number" step="0.001" name="quantity" defaultValue={values?.quantity ?? ""} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
             </label>
             <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
               Тип
-              <select name="type" defaultValue={values?.type ?? ACTIVITY_TYPE_VALUES[0]} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20">
+              <select name="type" defaultValue={values?.type ?? ACTIVITY_TYPE_VALUES[0]} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
                 {ACTIVITY_TYPE_VALUES.map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -108,7 +108,7 @@ export default function ActivityEditorDialog({
             </label>
             <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
               Описание
-              <input type="text" name="description" defaultValue={values?.description ?? ""} placeholder="По желание" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
+              <input type="text" name="description" defaultValue={values?.description ?? ""} placeholder="По желание" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
             </label>
           </div>
 
@@ -118,7 +118,7 @@ export default function ActivityEditorDialog({
             <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm" type="button" onClick={onClose}>
               Отказ
             </button>
-            <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)] transition-all hover:-translate-y-px hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isPending}>
+            <button className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(5,150,105,0.25)] transition-all hover:-translate-y-px hover:bg-emerald-700 disabled:opacity-60" type="submit" disabled={isPending}>
               {isPending ? "Запазване..." : "Запази"}
             </button>
           </div>

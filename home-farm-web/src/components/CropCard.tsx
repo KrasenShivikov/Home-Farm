@@ -9,7 +9,7 @@ export default function CropCard({ crop }: { crop: any }) {
       {crop.variety && <p className="text-sm text-gray-600">{crop.variety}</p>}
       <p className="mt-3 text-sm text-gray-700">{crop.description ?? ""}</p>
       <div className="mt-4 flex items-center justify-between">
-        <div className="text-slate-700 font-medium">{crop.price ? `${crop.price} лв` : "—"}</div>
+        <div className="text-slate-700 font-medium">{crop.price ? `${crop.price} €` : "—"}</div>
         <Link href={`/admin/crops/${crop.id}`} className="text-sm text-accent font-semibold">
           Преглед
         </Link>

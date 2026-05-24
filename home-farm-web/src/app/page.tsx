@@ -12,7 +12,7 @@ export default function Home() {
             място. Бърз достъп, ясен контрол и стабилен ритъм за сезоните.
           </p>
           <div className="flex flex-wrap gap-3">
-            <a className="inline-flex items-center justify-center rounded-full bg-orange-500 px-6 py-3 text-sm font-bold text-white shadow-[0_4px_16px_rgba(234,88,12,0.35)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-[0_8px_24px_rgba(234,88,12,0.4)]" href="/login">
+            <a className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-bold text-white shadow-[0_4px_16px_rgba(5,150,105,0.35)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-[0_8px_24px_rgba(5,150,105,0.4)]" href="/login">
               Вход
             </a>
             <a className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/90 px-6 py-3 text-sm font-bold text-slate-800 transition-all duration-150 hover:-translate-y-0.5 hover:bg-white hover:shadow-sm" href="/register">

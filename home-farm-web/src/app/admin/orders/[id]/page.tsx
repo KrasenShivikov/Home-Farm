@@ -53,7 +53,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
 
           <div className="rounded-2xl border bg-slate-50 p-4 text-sm text-slate-700">
             <p>Артикули: {order.totalItems}</p>
-            <p>Общо: {order.totalAmount} лв</p>
+            <p>Общо: {order.totalAmount} €</p>
           </div>
         </div>
 
@@ -105,8 +105,8 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                         {item.cropVariety ? <span className="text-slate-500"> — {item.cropVariety}</span> : null}
                       </td>
                       <td className="px-4 py-3 text-slate-700">{item.quantity}</td>
-                      <td className="px-4 py-3 text-slate-700">{item.price} лв</td>
-                      <td className="px-4 py-3 text-slate-700">{lineTotal} лв</td>
+                      <td className="px-4 py-3 text-slate-700">{item.price} €</td>
+                      <td className="px-4 py-3 text-slate-700">{lineTotal} €</td>
                     </tr>
                   );
                 })

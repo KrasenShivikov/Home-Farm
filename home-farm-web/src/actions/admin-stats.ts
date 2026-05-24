@@ -11,6 +11,7 @@ import {
   orders,
   orderLines,
   users,
+  expences,
 } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { sql, type SQL } from "drizzle-orm";
@@ -73,6 +74,7 @@ export type AdminStats = {
     totalProductsQty: string;
     totalProductsValue: string;
     totalProductAddedValue: string;
+    totalExpencesValue: string;
     endTotalValue: string;
   };
   orders: {
@@ -133,6 +135,10 @@ type UserOrderedProductRow = {
 
 type OrderLinesRow = {
   totalQty: string | number;
+  totalValue: string | number;
+};
+
+type ExpencesTotalRow = {
   totalValue: string | number;
 };
 
@@ -317,7 +323,24 @@ export async function getAdminStats(filters: AdminStatsFilters = {}): Promise<Ad
   }, 0).toFixed(2);
   const totalProductAddedValue = (Number(totalProductsValue) - Number(totalUsedCropsValue)).toFixed(2);
 
-  const endTotalValue = (Number(totalProductionValue) - Number(totalWastesValue) + Number(totalProductAddedValue)).toFixed(2);
+  const expenceDateConditions: SQL[] = [];
+  if (start) expenceDateConditions.push(sql`${expences.date} >= ${start}`);
+  if (end) expenceDateConditions.push(sql`${expences.date} <= ${end}`);
+  const expenceDateWhere = expenceDateConditions.length > 0 ? and(...expenceDateConditions) : undefined;
+
+  const expencesTotalRows = await db
+    .select({ totalValue: sql`coalesce(sum(${expences.value}),0)` })
+    .from(expences)
+    .where(expenceDateWhere);
+
+  const totalExpencesValue = String((expencesTotalRows as ExpencesTotalRow[])[0]?.totalValue ?? "0");
+
+  const endTotalValue = (
+    Number(totalProductionValue) -
+    Number(totalWastesValue) +
+    Number(totalProductAddedValue) -
+    Number(totalExpencesValue)
+  ).toFixed(2);
 
   // Orders stats
   const orderDateConditions: SQL[] = [];
@@ -415,6 +438,7 @@ export async function getAdminStats(filters: AdminStatsFilters = {}): Promise<Ad
       totalProductsQty: totalProductsQty,
       totalProductsValue: totalProductsValue,
       totalProductAddedValue: totalProductAddedValue,
+      totalExpencesValue: totalExpencesValue,
       endTotalValue: endTotalValue,
     },
     orders: {

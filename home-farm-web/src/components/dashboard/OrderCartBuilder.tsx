@@ -130,111 +130,121 @@ export default function OrderCartBuilder({ crops, shippingDefaults }: OrderCartB
   }, 0);
 
   return (
-    <section className="space-y-4 rounded-2xl border bg-white p-6 shadow-sm">
-      <div>
-        <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Нова поръчка</p>
-        <h2 className="text-xl font-semibold text-slate-900">Кошница за поръчка</h2>
-        <p className="text-sm text-slate-600">Добавете няколко култури и изпратете една поръчка с много редове.</p>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-[1.3fr_0.7fr_auto] md:items-end">
-        <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
-          Култура
-          <select value={selectedCropId ?? ""} onChange={(event) => setSelectedCropId(Number(event.target.value))} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20">
-            {crops.map((crop) => (
-              <option key={crop.id} value={crop.id}>
-                {crop.name}
-                {crop.variety ? ` — ${crop.variety}` : ""}
-                {crop.price ? ` (${crop.price} лв)` : ""}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
-          Количество
-          <input type="number" min="0.001" step="0.001" value={quantity} onChange={(event) => setQuantity(event.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
-        </label>
-
-        <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-0.5 hover:shadow-sm disabled:opacity-60" type="button" onClick={addToCart} disabled={crops.length === 0}>
-          Добави в кошницата
-        </button>
-      </div>
-
-      {cart.length === 0 ? (
-        <p className="text-sm text-slate-600">Кошницата е празна.</p>
-      ) : (
-        <div className="space-y-3">
-          <div className="overflow-hidden rounded-xl border">
-            <table className="min-w-full divide-y divide-slate-200 text-sm">
-              <thead className="bg-slate-50 text-left text-slate-600">
-                <tr>
-                  <th className="px-4 py-3 font-medium">Култура</th>
-                  <th className="px-4 py-3 font-medium">Количество</th>
-                  <th className="px-4 py-3 font-medium">Цена</th>
-                  <th className="px-4 py-3 font-medium">Сума</th>
-                  <th className="px-4 py-3 font-medium" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200 bg-white">
-                {cart.map((item) => {
-                  const lineTotal = (Number(item.quantity) * Number(item.price || 0)).toFixed(2);
-
-                  return (
-                    <tr key={item.cropId}>
-                      <td className="px-4 py-3 text-slate-900">
-                        {item.name}
-                        {item.variety ? <span className="text-slate-500"> — {item.variety}</span> : null}
-                      </td>
-                      <td className="px-4 py-3 text-slate-700">{item.quantity}</td>
-                      <td className="px-4 py-3 text-slate-700">{item.price} лв</td>
-                      <td className="px-4 py-3 text-slate-700">{lineTotal} лв</td>
-                      <td className="px-4 py-3 text-right">
-                        <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition-all hover:-translate-y-px hover:shadow-sm" type="button" onClick={() => removeFromCart(item.cropId)}>
-                          Премахни
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+    <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_24rem]">
+      <div className="space-y-5">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-4">
+            <p className="text-[0.68rem] font-bold uppercase tracking-[0.24em] text-slate-400">Продукт</p>
+            <h2 className="mt-1 text-xl font-bold text-slate-950">Добавяне в кошницата</h2>
           </div>
+          <div className="grid gap-4 p-5 md:grid-cols-[1.3fr_0.7fr_auto] md:items-end">
+            <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+              Култура
+              <select value={selectedCropId ?? ""} onChange={(event) => setSelectedCropId(Number(event.target.value))} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                {crops.map((crop) => (
+                  <option key={crop.id} value={crop.id}>
+                    {crop.name}
+                    {crop.variety ? ` — ${crop.variety}` : ""}
+                    {crop.price ? ` (${crop.price} €)` : ""}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm font-medium text-slate-700">Обща стойност: {cartTotal.toFixed(2)} лв</p>
-            <form ref={formRef} action={action} className="space-y-4">
-              <input type="hidden" name="cartJson" value={cartJson} />
+            <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+              Количество
+              <input type="number" min="0.001" step="0.001" value={quantity} onChange={(event) => setQuantity(event.target.value)} className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
+            </label>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
-                  Град за доставка
-                  <input name="shippingCity" defaultValue={shippingDefaults.shippingCity} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
-                </label>
-
-                <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
-                  Адрес / улица
-                  <input name="shippingStreet" defaultValue={shippingDefaults.shippingStreet} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
-                </label>
-
-                <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
-                  Пощенски код
-                  <input name="shippingPostalCode" defaultValue={shippingDefaults.shippingPostalCode} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
-                </label>
-
-                <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
-                  Държава
-                  <input name="shippingCountry" defaultValue={shippingDefaults.shippingCountry} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
-                </label>
-              </div>
-
-              <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isPending}>
-                {isPending ? "Създаване..." : "Създай поръчка"}
-              </button>
-            </form>
+            <button className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-[0_4px_12px_rgba(5,150,105,0.24)] transition-all hover:-translate-y-px hover:bg-emerald-700 disabled:opacity-60" type="button" onClick={addToCart} disabled={crops.length === 0}>
+              Добави
+            </button>
           </div>
         </div>
-      )}
+
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-slate-50/80 px-5 py-4">
+            <div>
+              <p className="text-[0.68rem] font-bold uppercase tracking-[0.24em] text-slate-400">Кошница</p>
+              <h2 className="mt-1 text-xl font-bold text-slate-950">Избрани продукти</h2>
+            </div>
+            <div className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-bold tabular-nums text-emerald-800">
+              {cartTotal.toFixed(2)} €
+            </div>
+          </div>
+
+          {cart.length === 0 ? (
+            <div className="px-5 py-10 text-center text-sm text-slate-500">Кошницата е празна.</div>
+          ) : (
+            <div className="divide-y divide-slate-100">
+              {cart.map((item) => {
+                const lineTotal = (Number(item.quantity) * Number(item.price || 0)).toFixed(2);
+
+                return (
+                  <div key={item.cropId} className="grid gap-3 px-5 py-4 sm:grid-cols-[1fr_7rem_7rem_auto] sm:items-center">
+                    <div className="min-w-0">
+                      <div className="truncate font-semibold text-slate-950">{item.name}</div>
+                      <div className="truncate text-sm text-slate-500">{item.variety || "Без сорт"}</div>
+                    </div>
+                    <div className="rounded-xl bg-slate-50 px-3 py-2 text-sm">
+                      <div className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-slate-400">Кол.</div>
+                      <div className="font-bold tabular-nums text-slate-900">{item.quantity}</div>
+                    </div>
+                    <div className="rounded-xl bg-emerald-50 px-3 py-2 text-sm">
+                      <div className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-emerald-600">Сума</div>
+                      <div className="font-bold tabular-nums text-emerald-900">{lineTotal} €</div>
+                    </div>
+                    <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition-all hover:-translate-y-px hover:border-slate-400 hover:shadow-sm" type="button" onClick={() => removeFromCart(item.cropId)}>
+                      Премахни
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <form ref={formRef} action={action} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <input type="hidden" name="cartJson" value={cartJson} />
+        <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-4">
+          <p className="text-[0.68rem] font-bold uppercase tracking-[0.24em] text-slate-400">Доставка</p>
+          <h2 className="mt-1 text-xl font-bold text-slate-950">Адрес и изпращане</h2>
+        </div>
+
+        <div className="space-y-4 p-5">
+          <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+            Град за доставка
+            <input name="shippingCity" defaultValue={shippingDefaults.shippingCity} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
+          </label>
+
+          <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+            Адрес / улица
+            <input name="shippingStreet" defaultValue={shippingDefaults.shippingStreet} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
+          </label>
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+            <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+              Пощенски код
+              <input name="shippingPostalCode" defaultValue={shippingDefaults.shippingPostalCode} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
+            </label>
+
+            <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+              Държава
+              <input name="shippingCountry" defaultValue={shippingDefaults.shippingCountry} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
+            </label>
+          </div>
+
+          <div className="rounded-2xl bg-emerald-50 px-4 py-3">
+            <div className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-emerald-600">Обща стойност</div>
+            <div className="mt-1 text-3xl font-extrabold tabular-nums text-emerald-900">{cartTotal.toFixed(2)} €</div>
+          </div>
+
+          <button className="inline-flex w-full items-center justify-center rounded-full bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-[0_4px_12px_rgba(5,150,105,0.24)] transition-all hover:-translate-y-px hover:bg-emerald-700 disabled:opacity-60" type="submit" disabled={isPending || cart.length === 0}>
+            {isPending ? "Създаване..." : "Създай поръчка"}
+          </button>
+        </div>
+      </form>
     </section>
   );
 }

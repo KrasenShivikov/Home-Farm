@@ -61,11 +61,11 @@ export default function OrderDetailActions({ orderId, status }: OrderDetailActio
   const canDelete = status !== "Completed";
 
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="grid gap-3">
       {canCancel ? (
         <form action={cancelAction}>
           <input type="hidden" name="orderId" value={orderId} />
-          <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm disabled:opacity-60" type="submit" disabled={cancelPending}>
+          <button className="inline-flex w-full items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:border-slate-400 hover:shadow-sm disabled:opacity-60" type="submit" disabled={cancelPending}>
             {cancelPending ? "Отказване..." : "Откажи поръчка"}
           </button>
         </form>
@@ -74,10 +74,15 @@ export default function OrderDetailActions({ orderId, status }: OrderDetailActio
       {canDelete ? (
         <form action={deleteAction}>
           <input type="hidden" name="orderId" value={orderId} />
-          <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)] transition-all hover:-translate-y-px hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={deletePending}>
+          <button className="inline-flex w-full items-center justify-center rounded-full bg-rose-600 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_12px_rgba(225,29,72,0.24)] transition-all hover:-translate-y-px hover:bg-rose-700 disabled:opacity-60" type="submit" disabled={deletePending}>
             {deletePending ? "Изтриване..." : "Изтрий поръчка"}
           </button>
         </form>
+      ) : null}
+      {!canCancel && !canDelete ? (
+        <div className="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-500">
+          Няма налични действия за тази поръчка.
+        </div>
       ) : null}
     </div>
   );

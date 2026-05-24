@@ -37,12 +37,12 @@ export default function ProductRecordActions({ product, onRequestDelete, updateA
 
   return (
     <>
-      <div className="flex flex-wrap gap-2">
-        <Link className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:bg-white hover:shadow-sm" href={`/admin/products/${product.id}`}>
+      <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+        <Link className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:border-slate-400 hover:shadow-sm" href={`/admin/products/${product.id}`}>
           Детайли
         </Link>
         <button
-          className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:bg-white hover:shadow-sm"
+          className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:border-slate-400 hover:shadow-sm"
           type="button"
           onClick={() => {
             setEditSession((value) => value + 1);
@@ -51,7 +51,7 @@ export default function ProductRecordActions({ product, onRequestDelete, updateA
         >
           Редактирай
         </button>
-        <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)] transition-all hover:-translate-y-px hover:bg-orange-600" type="button" onClick={() => onRequestDelete(product)}>
+        <button className="inline-flex items-center justify-center rounded-full bg-rose-600 px-4 py-2 text-sm font-bold text-white shadow-[0_4px_12px_rgba(225,29,72,0.24)] transition-all hover:-translate-y-px hover:bg-rose-700" type="button" onClick={() => onRequestDelete(product)}>
           Изтрий
         </button>
       </div>

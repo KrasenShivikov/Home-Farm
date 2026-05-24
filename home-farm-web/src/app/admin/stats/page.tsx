@@ -15,6 +15,10 @@ export default async function AdminStatsPage({
     params.catalogTab === "crops" || params.catalogTab === "products"
       ? params.catalogTab
       : "summary";
+  const ordersTab =
+    params.ordersTab === "products" || params.ordersTab === "users"
+      ? params.ordersTab
+      : "status";
   const cropId = params.cropId ? Number(params.cropId) : null;
   const productId = params.productId ? Number(params.productId) : null;
 
@@ -37,6 +41,7 @@ export default async function AdminStatsPage({
         endDate={endDate}
         initialMainTab={mainTab}
         initialCatalogTab={catalogTab}
+        initialOrdersTab={ordersTab}
       />
     </section>
   );

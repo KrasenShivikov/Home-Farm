@@ -9,7 +9,7 @@ export default function RegisterPage() {
     null
   );
 
-  const inputCls = "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20";
+  const inputCls = "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20";
 
   return (
     <section className="py-14">
@@ -33,13 +33,13 @@ export default function RegisterPage() {
             Парола
             <input type="password" name="password" placeholder="Изберете парола" required autoComplete="new-password" className={inputCls} />
           </label>
-          <button className="mt-1 w-full rounded-full bg-orange-500 py-3 text-sm font-bold text-white shadow-[0_4px_16px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isPending}>
+          <button className="mt-1 w-full rounded-full bg-emerald-600 py-3 text-sm font-bold text-white shadow-[0_4px_16px_rgba(5,150,105,0.3)] transition-all hover:-translate-y-0.5 hover:bg-emerald-700 disabled:opacity-60" type="submit" disabled={isPending}>
             {isPending ? "Моля, изчакайте..." : "Създай профил"}
           </button>
         </form>
         <p className="text-center text-sm text-slate-500">
           Вече имате профил?{" "}
-          <a href="/login" className="font-bold text-slate-900 hover:text-orange-600">Вход</a>
+          <a href="/login" className="font-bold text-slate-900 hover:text-emerald-700">Вход</a>
         </p>
       </div>
     </section>

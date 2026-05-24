@@ -3,7 +3,7 @@
 import { updateAdminOrderStatusAction } from "@/actions/admin-orders";
 import OrderStatusBadge from "@/components/admin/OrderStatusBadge";
 import { useToast } from "@/components/ui/toast";
-import { ORDER_STATUSES } from "@/lib/order-statuses";
+import { formatOrderStatus, ORDER_STATUSES } from "@/lib/order-statuses";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef } from "react";
 
@@ -57,13 +57,13 @@ export default function OrderStatusForm({ orderId, status }: OrderStatusFormProp
         <select name="status" defaultValue={status} className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900">
           {ORDER_STATUSES.map((statusOption) => (
             <option key={statusOption} value={statusOption}>
-              {statusOption}
+              {formatOrderStatus(statusOption)}
             </option>
           ))}
         </select>
       </label>
 
-      <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isPending}>
+      <button className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(5,150,105,0.3)] transition-all hover:-translate-y-0.5 hover:bg-emerald-700 disabled:opacity-60" type="submit" disabled={isPending}>
         {isPending ? "Запазване..." : "Запази статус"}
       </button>
     </form>

@@ -76,19 +76,19 @@ export default function ProductEditorDialog({ open, mode, values, onClose, title
           <div className="grid gap-4 md:grid-cols-2">
             <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
               Име
-              <input type="text" name="name" defaultValue={values?.name ?? ""} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
+              <input type="text" name="name" defaultValue={values?.name ?? ""} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
             </label>
             <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
               Дата
-              <input type="date" name="date" defaultValue={values?.date ?? ""} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
+              <input type="date" name="date" defaultValue={values?.date ?? ""} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
             </label>
             <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
               Количество
-              <input type="number" name="quantity" min="0" step="0.001" defaultValue={values?.quantity ?? "1.000"} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
+              <input type="number" name="quantity" min="0" step="0.001" defaultValue={values?.quantity ?? "1.000"} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
             </label>
             <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
               Цена
-              <input type="number" name="price" min="0" step="0.01" defaultValue={values?.price ?? ""} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20" />
+              <input type="number" name="price" min="0" step="0.01" defaultValue={values?.price ?? ""} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
             </label>
           </div>
 
@@ -98,7 +98,7 @@ export default function ProductEditorDialog({ open, mode, values, onClose, title
             <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm" type="button" onClick={onClose}>
               Отказ
             </button>
-            <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(234,88,12,0.25)] transition-all hover:-translate-y-px hover:bg-orange-600 disabled:opacity-60" type="submit" disabled={isPending}>
+            <button className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2 text-sm font-bold text-white shadow-[0_2px_8px_rgba(5,150,105,0.25)] transition-all hover:-translate-y-px hover:bg-emerald-700 disabled:opacity-60" type="submit" disabled={isPending}>
               {isPending ? "Запазване..." : "Запази"}
             </button>
           </div>

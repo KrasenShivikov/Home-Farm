@@ -57,7 +57,7 @@ export default function ActivityCrudManager({
           <h2 className="text-xl font-semibold text-slate-900">Добавяне, редакция и изтриване</h2>
           <p className="text-sm text-slate-600">{description}</p>
         </div>
-        <button className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(234,88,12,0.3)] transition-all hover:-translate-y-0.5 hover:bg-orange-600" type="button" onClick={() => setCreateOpen(true)}>
+        <button className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(5,150,105,0.3)] transition-all hover:-translate-y-0.5 hover:bg-emerald-700" type="button" onClick={() => setCreateOpen(true)}>
           {addButtonLabel}
         </button>
       </div>
