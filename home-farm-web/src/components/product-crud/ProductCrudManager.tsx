@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PaginationControls, usePagination } from "@/components/Pagination";
 import { formatBulgarianDate } from "@/lib/format-date";
 import ProductEditorDialog, { type ProductFormValues } from "./ProductEditorDialog";
 import ProductRecordActions, { type ProductRecord } from "./ProductRecordActions";
@@ -23,6 +24,7 @@ type ProductCrudManagerProps = {
 export default function ProductCrudManager({ products, createAction, updateAction, deleteAction }: ProductCrudManagerProps) {
   const [createOpen, setCreateOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<ProductRecord | null>(null);
+  const { page, pageCount, pageItems, pageSize, setPage } = usePagination(products, 6);
 
   const createValues: ProductFormValues = {
     name: "",
@@ -45,7 +47,7 @@ export default function ProductCrudManager({ products, createAction, updateActio
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {products.length === 0 && <div className="text-sm text-slate-600">Няма продукти.</div>}
 
-        {products.map((product) => (
+        {pageItems.map((product) => (
           <article key={product.id} className="rounded-2xl border bg-white p-4 shadow-sm">
             <div className="space-y-3">
               <div>
@@ -64,6 +66,13 @@ export default function ProductCrudManager({ products, createAction, updateActio
           </article>
         ))}
       </div>
+      <PaginationControls
+        page={page}
+        pageCount={pageCount}
+        totalItems={products.length}
+        pageSize={pageSize}
+        onPageChange={setPage}
+      />
 
       <ProductEditorDialog
         open={createOpen}

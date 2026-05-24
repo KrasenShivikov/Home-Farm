@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PaginationControls, usePagination } from "@/components/Pagination";
 import { ACTIVITY_TYPE_VALUES } from "@/lib/activity-types";
 import { formatBulgarianDate } from "@/lib/format-date";
 import ActivityEditorDialog, { type ActivityFormValues } from "./ActivityEditorDialog";
@@ -39,6 +40,7 @@ export default function ActivityCrudManager({
 }: ActivityCrudManagerProps) {
   const [createOpen, setCreateOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<ActivityRecord | null>(null);
+  const { page, pageCount, pageItems, pageSize, setPage } = usePagination(records, 5);
 
   const createValues: ActivityFormValues = {
     date: "",
@@ -63,7 +65,7 @@ export default function ActivityCrudManager({
       <div className="space-y-3">
         {records.length === 0 && <div className="text-sm text-slate-600">Няма записи за тази култура.</div>}
 
-        {records.map((record) => (
+        {pageItems.map((record) => (
           <article key={record.id} className="rounded-2xl border bg-white p-4 shadow-sm">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -83,6 +85,13 @@ export default function ActivityCrudManager({
           </article>
         ))}
       </div>
+      <PaginationControls
+        page={page}
+        pageCount={pageCount}
+        totalItems={records.length}
+        pageSize={pageSize}
+        onPageChange={setPage}
+      />
 
       <ActivityEditorDialog
         open={createOpen}

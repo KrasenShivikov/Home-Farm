@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PaginationControls, usePagination } from "@/components/Pagination";
 import CropEditorDialog, { type CropFormValues } from "./CropEditorDialog";
 import CropRecordActions, { type CropRecord } from "./CropRecordActions";
 import CropDeleteDialog from "./CropDeleteDialog";
@@ -22,6 +23,7 @@ type CropCrudManagerProps = {
 export default function CropCrudManager({ crops, createAction, updateAction, deleteAction }: CropCrudManagerProps) {
   const [createOpen, setCreateOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<CropRecord | null>(null);
+  const { page, pageCount, pageItems, pageSize, setPage } = usePagination(crops, 6);
 
   const createValues: CropFormValues = {
     name: "",
@@ -45,7 +47,7 @@ export default function CropCrudManager({ crops, createAction, updateAction, del
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        {crops.map((crop) => (
+        {pageItems.map((crop) => (
           <article key={crop.id} className="rounded-2xl border bg-white p-4 shadow-sm">
             <div className="space-y-3">
               <div>
@@ -65,6 +67,13 @@ export default function CropCrudManager({ crops, createAction, updateAction, del
           </article>
         ))}
       </div>
+      <PaginationControls
+        page={page}
+        pageCount={pageCount}
+        totalItems={crops.length}
+        pageSize={pageSize}
+        onPageChange={setPage}
+      />
 
       <CropEditorDialog
         open={createOpen}
