@@ -22,6 +22,7 @@ type CropCrudManagerProps = {
 
 export default function CropCrudManager({ crops, createAction, updateAction, deleteAction }: CropCrudManagerProps) {
   const [createOpen, setCreateOpen] = useState(false);
+  const [createSession, setCreateSession] = useState(0);
   const [deleteTarget, setDeleteTarget] = useState<CropRecord | null>(null);
   const { page, pageCount, pageItems, pageSize, setPage } = usePagination(crops, 6);
 
@@ -41,7 +42,14 @@ export default function CropCrudManager({ crops, createAction, updateAction, del
           <h2 className="text-2xl font-bold text-slate-950">Добавяне, редакция и изтриване</h2>
           <p className="text-sm text-slate-600">Управлявайте културите директно от админ таблото.</p>
         </div>
-        <button className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(5,150,105,0.28)] transition-all hover:-translate-y-0.5 hover:bg-emerald-700" type="button" onClick={() => setCreateOpen(true)}>
+        <button
+          className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(5,150,105,0.28)] transition-all hover:-translate-y-0.5 hover:bg-emerald-700"
+          type="button"
+          onClick={() => {
+            setCreateSession((value) => value + 1);
+            setCreateOpen(true);
+          }}
+        >
           Добави култура
         </button>
       </div>
@@ -54,7 +62,7 @@ export default function CropCrudManager({ crops, createAction, updateAction, del
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {pageItems.map((crop) => (
-          <article key={crop.id} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md">
+          <article key={crop.id} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all hover:border-emerald-200 hover:shadow-md">
             <div className="flex h-full flex-col">
               <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 bg-slate-50/70 px-5 py-4">
                 <div className="min-w-0">
@@ -102,6 +110,7 @@ export default function CropCrudManager({ crops, createAction, updateAction, del
       />
 
       <CropEditorDialog
+        key={`create-${createSession}`}
         open={createOpen}
         mode="create"
         values={createValues}

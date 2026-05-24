@@ -23,6 +23,7 @@ export default function HarvestingManager({ harvestings, cropId }: { harvestings
       pluralLabel="Реколти"
       description="Управлявайте записите за реколтата директно от страницата на културата."
       addButtonLabel="Добави реколта"
+      showQuantity
       createAction={createHarvestingAction}
       updateAction={updateHarvestingAction}
       deleteAction={deleteHarvestingAction}

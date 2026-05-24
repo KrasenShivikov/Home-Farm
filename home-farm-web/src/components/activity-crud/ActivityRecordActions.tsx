@@ -7,7 +7,7 @@ export type ActivityRecord = {
   id: number;
   date: string;
   quantity: string;
-  type: string;
+  type?: string;
   description: string | null;
 };
 
@@ -20,6 +20,8 @@ type ActivityRecordActionsProps = {
   record: ActivityRecord;
   cropId: number;
   label: string;
+  showQuantity?: boolean;
+  showType?: boolean;
   updateAction: ActionFn;
   onRequestDelete: (record: ActivityRecord) => void;
 };
@@ -28,6 +30,8 @@ export default function ActivityRecordActions({
   record,
   cropId,
   label,
+  showQuantity = false,
+  showType = false,
   updateAction,
   onRequestDelete,
 }: ActivityRecordActionsProps) {
@@ -44,9 +48,9 @@ export default function ActivityRecordActions({
 
   return (
     <>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 sm:justify-end">
         <button
-          className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:bg-white hover:shadow-sm"
+          className="inline-flex min-w-32 items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:border-emerald-300 hover:text-emerald-800 hover:shadow-sm"
           type="button"
           onClick={() => {
             setEditSession((value) => value + 1);
@@ -55,7 +59,7 @@ export default function ActivityRecordActions({
         >
           Редактирай
         </button>
-        <button className="inline-flex items-center justify-center rounded-full bg-rose-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(225,29,72,0.25)] transition-all hover:-translate-y-px hover:bg-rose-700" type="button" onClick={() => onRequestDelete(record)}>
+        <button className="inline-flex min-w-28 items-center justify-center rounded-full bg-rose-600 px-4 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(225,29,72,0.22)] transition-all hover:-translate-y-px hover:bg-rose-700" type="button" onClick={() => onRequestDelete(record)}>
           Изтрий
         </button>
       </div>
@@ -67,6 +71,8 @@ export default function ActivityRecordActions({
         cropId={cropId}
         values={values}
         title={label}
+        showQuantity={showQuantity}
+        showType={showType}
         onClose={() => setEditOpen(false)}
         actionFn={updateAction}
       />

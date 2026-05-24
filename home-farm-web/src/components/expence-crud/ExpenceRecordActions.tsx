@@ -38,7 +38,7 @@ export default function ExpenceRecordActions({
     <>
       <div className="flex justify-end gap-2">
         <button
-          className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:bg-white hover:shadow-sm"
+          className="inline-flex min-w-28 items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:border-emerald-300 hover:text-emerald-800 hover:shadow-sm"
           type="button"
           onClick={() => {
             setEditSession((value) => value + 1);
@@ -48,7 +48,7 @@ export default function ExpenceRecordActions({
           Редактирай
         </button>
         <button
-          className="inline-flex items-center justify-center rounded-full bg-rose-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(225,29,72,0.25)] transition-all hover:-translate-y-px hover:bg-rose-700"
+          className="inline-flex min-w-24 items-center justify-center rounded-full bg-rose-600 px-4 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(225,29,72,0.22)] transition-all hover:-translate-y-px hover:bg-rose-700"
           type="button"
           onClick={() => onRequestDelete(expence)}
         >

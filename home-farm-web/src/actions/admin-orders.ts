@@ -119,6 +119,8 @@ async function requireAdminSession() {
 export type AdminOrdersFilter = {
   user?: string;
   date?: string;
+  startDate?: string;
+  endDate?: string;
   status?: string;
 };
 
@@ -130,7 +132,15 @@ export async function getAdminOrders(filters: AdminOrdersFilter = {}): Promise<A
     conditions.push(sql`(${users.name} ilike ${search} or ${users.email} ilike ${search})`);
   }
 
-  if (filters.date) {
+  if (filters.startDate || filters.endDate) {
+    if (filters.startDate) {
+      conditions.push(gte(orders.createdAt, new Date(`${filters.startDate}T00:00:00`)));
+    }
+
+    if (filters.endDate) {
+      conditions.push(lt(orders.createdAt, new Date(`${filters.endDate}T23:59:59.999`)));
+    }
+  } else if (filters.date) {
     const selectedDate = new Date(`${filters.date}T00:00:00`);
     const nextDate = new Date(selectedDate);
     nextDate.setDate(nextDate.getDate() + 1);

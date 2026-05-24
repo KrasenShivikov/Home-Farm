@@ -1,7 +1,6 @@
 import { db } from "@/db";
 import { products } from "@/db/schema";
-import ProductCrudManager from "@/components/product-crud/ProductCrudManager";
-import { createProductAction, deleteProductAction, updateProductAction } from "@/actions/product-actions";
+import ProductList from "@/components/product-crud/ProductList";
 import AdminTabs from "@/components/admin/AdminTabs";
 
 export const metadata = {
@@ -20,12 +19,7 @@ export default async function ProductsAdminPage() {
 
       <AdminTabs active="products" />
 
-      <ProductCrudManager
-        products={all}
-        createAction={createProductAction}
-        updateAction={updateProductAction}
-        deleteAction={deleteProductAction}
-      />
+      <ProductList initial={all} />
     </section>
   );
 }

@@ -26,6 +26,8 @@ import {
 } from "@/lib/order-create-mode";
 import { useProtectedRoute } from "@/lib/use-protected-route";
 
+import LoadingScreen from "../loading";
+
 export default function OrderDetailsScreen() {
   const isLoggedIn = useProtectedRoute();
   const { token } = useAuth();
@@ -273,6 +275,10 @@ export default function OrderDetailsScreen() {
 
   if (!isLoggedIn) {
     return null;
+  }
+
+  if (isLoading && !order) {
+    return <LoadingScreen />;
   }
 
   return (

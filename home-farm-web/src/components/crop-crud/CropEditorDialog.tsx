@@ -66,9 +66,6 @@ export default function CropEditorDialog({ open, mode, values, onClose, title, a
             </h3>
             <p className="text-sm text-slate-600">Попълнете полетата и натиснете Запази или прекратете с Отказ.</p>
           </div>
-          <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm" type="button" onClick={onClose}>
-            Отказ
-          </button>
         </div>
 
         <form action={action} className="space-y-4">
@@ -87,9 +84,14 @@ export default function CropEditorDialog({ open, mode, values, onClose, title, a
               Цена
               <input type="number" step="0.01" name="price" defaultValue={values?.price ?? ""} placeholder="По желание" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
             </label>
-            <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+            <label className="grid gap-1.5 text-sm font-semibold text-slate-700 md:col-span-2">
               Описание
-              <input type="text" name="description" defaultValue={values?.description ?? ""} placeholder="По желание" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
+              <textarea
+                name="description"
+                defaultValue={values?.description ?? ""}
+                rows={3}
+                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              />
             </label>
           </div>
 

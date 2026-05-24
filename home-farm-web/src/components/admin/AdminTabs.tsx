@@ -25,7 +25,7 @@ export default function AdminTabs({ active }: AdminTabsProps) {
     "inline-flex items-center gap-1.5 rounded-full border px-5 py-2 text-sm font-semibold transition-all duration-150";
   const inactive = `${base} border-transparent bg-transparent text-slate-500 hover:bg-white/85 hover:text-emerald-800`;
   const activeCls =
-    `${base} cursor-default border-slate-200 bg-slate-100 text-slate-950 shadow-sm`;
+    `${base} cursor-default border-transparent bg-emerald-600 text-white shadow-[0_6px_16px_rgba(5,150,105,0.24)]`;
 
   return (
     <nav

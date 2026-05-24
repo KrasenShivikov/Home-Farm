@@ -30,9 +30,19 @@ type ActivityEditorDialogProps = {
   cropId: number;
   values?: ActivityFormValues;
   title: string;
+  showQuantity?: boolean;
+  showType?: boolean;
   onClose: () => void;
   actionFn: ActionFn;
 };
+
+function formatActivityQuantityInput(value: string | number | null | undefined) {
+  if (value === undefined || value === null || value === "") {
+    return "";
+  }
+
+  return Number(value || 0).toFixed(2);
+}
 
 export default function ActivityEditorDialog({
   open,
@@ -40,6 +50,8 @@ export default function ActivityEditorDialog({
   cropId,
   values,
   title,
+  showQuantity = false,
+  showType = false,
   onClose,
   actionFn,
 }: ActivityEditorDialogProps) {
@@ -78,37 +90,45 @@ export default function ActivityEditorDialog({
             </h3>
             <p className="text-sm text-slate-600">Попълнете полетата и натиснете Запази или прекратете с Отказ.</p>
           </div>
-          <button className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition-all hover:-translate-y-px hover:shadow-sm" type="button" onClick={onClose}>
-            Отказ
-          </button>
         </div>
 
         <form action={action} className="space-y-4">
           <input type="hidden" name="cropId" value={cropId} />
+          {!showQuantity && <input type="hidden" name="quantity" value={values?.quantity || "0"} />}
+          {!showType && <input type="hidden" name="type" value={values?.type ?? ACTIVITY_TYPE_VALUES[0]} />}
           {mode === "edit" && <input type="hidden" name="id" value={values?.id ?? ""} />}
 
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2">
             <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
               Дата
               <input type="date" name="date" defaultValue={formatDateInputValue(values?.date)} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
             </label>
-            <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
-              Количество
-              <input type="number" step="0.001" name="quantity" defaultValue={values?.quantity ?? ""} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
-            </label>
-            <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
-              Тип
-              <select name="type" defaultValue={values?.type ?? ACTIVITY_TYPE_VALUES[0]} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
-                {ACTIVITY_TYPE_VALUES.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+            {showQuantity && (
+              <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+                Количество
+                <input type="number" step="0.01" name="quantity" defaultValue={formatActivityQuantityInput(values?.quantity)} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
+              </label>
+            )}
+            {showType && (
+              <label className="grid gap-1.5 text-sm font-semibold text-slate-700">
+                Тип
+                <select name="type" defaultValue={values?.type ?? ACTIVITY_TYPE_VALUES[0]} required className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                  {ACTIVITY_TYPE_VALUES.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+            <label className="grid gap-1.5 text-sm font-semibold text-slate-700 md:col-span-2">
               Описание
-              <input type="text" name="description" defaultValue={values?.description ?? ""} placeholder="По желание" className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20" />
+              <textarea
+                name="description"
+                defaultValue={values?.description ?? ""}
+                rows={3}
+                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm transition focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              />
             </label>
           </div>
 

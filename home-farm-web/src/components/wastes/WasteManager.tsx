@@ -20,6 +20,8 @@ export default function WasteManager({ wastes, cropId }: { wastes: Waste[]; crop
       pluralLabel="Загуби"
       description="Управлявайте записите за загубите директно от страницата на културата."
       addButtonLabel="Добави загуба"
+      showQuantity
+      showType
       createAction={createWasteAction}
       updateAction={updateWasteAction}
       deleteAction={deleteWasteAction}

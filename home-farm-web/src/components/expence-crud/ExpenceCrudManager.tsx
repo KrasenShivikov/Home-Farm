@@ -39,6 +39,7 @@ export default function ExpenceCrudManager({
   deleteAction,
 }: ExpenceCrudManagerProps) {
   const [createOpen, setCreateOpen] = useState(false);
+  const [createSession, setCreateSession] = useState(0);
   const [deleteTarget, setDeleteTarget] = useState<ExpenceRecord | null>(null);
   const { page, pageCount, pageItems, pageSize, setPage } = usePagination(expences, 8);
 
@@ -52,25 +53,28 @@ export default function ExpenceCrudManager({
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="flex flex-wrap items-end justify-between gap-4 rounded-3xl border border-emerald-900/10 bg-white/85 px-6 py-5 shadow-sm backdrop-blur-sm">
         <div>
           <p className="text-[0.68rem] font-bold uppercase tracking-[0.3em] text-slate-400">Разходи</p>
-          <h2 className="text-xl font-semibold text-slate-900">Добавяне, редакция и изтриване</h2>
-          <p className="text-sm text-slate-600">Управлявайте разходите и техните типове от тази страница.</p>
+          <h2 className="mt-1 text-2xl font-bold text-slate-950">Добавяне, редакция и изтриване</h2>
+          <p className="mt-1 text-sm text-slate-600">Управлявайте разходите и техните типове от тази страница.</p>
         </div>
         <button
-          className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(5,150,105,0.3)] transition-all hover:-translate-y-0.5 hover:bg-emerald-700"
+          className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-6 py-3 text-sm font-bold text-white shadow-[0_8px_22px_rgba(5,150,105,0.25)] transition-all hover:-translate-y-0.5 hover:bg-emerald-700"
           type="button"
-          onClick={() => setCreateOpen(true)}
+          onClick={() => {
+            setCreateSession((value) => value + 1);
+            setCreateOpen(true);
+          }}
         >
           Добави разход
         </button>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border bg-white shadow-sm">
+      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-100 text-sm">
-            <thead className="bg-slate-50 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+            <thead className="bg-slate-50/90 text-left text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
               <tr>
                 <th className="px-5 py-3">Дата</th>
                 <th className="px-5 py-3">Име</th>
@@ -83,17 +87,19 @@ export default function ExpenceCrudManager({
             <tbody className="divide-y divide-slate-100">
               {expences.length === 0 ? (
                 <tr>
-                  <td className="px-5 py-6 text-center text-slate-600" colSpan={6}>
+                  <td className="px-5 py-10 text-center text-sm font-medium text-slate-500" colSpan={6}>
                     Няма намерени разходи.
                   </td>
                 </tr>
               ) : (
                 pageItems.map((expence) => (
                   <tr key={expence.id} className="transition-colors hover:bg-slate-50/70">
-                    <td className="whitespace-nowrap px-5 py-4 text-slate-600">{formatBulgarianDate(expence.date)}</td>
+                    <td className="whitespace-nowrap px-5 py-4 font-medium text-slate-700">{formatBulgarianDate(expence.date)}</td>
                     <td className="px-5 py-4 font-semibold text-slate-900">{expence.name}</td>
-                    <td className="px-5 py-4 text-slate-600">{expence.typeName}</td>
-                    <td className="whitespace-nowrap px-5 py-4 text-right font-semibold tabular-nums text-slate-900">
+                    <td className="px-5 py-4">
+                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">{expence.typeName}</span>
+                    </td>
+                    <td className="whitespace-nowrap px-5 py-4 text-right font-extrabold tabular-nums text-rose-700">
                       {formatMoney(expence.value)}
                     </td>
                     <td className="max-w-sm px-5 py-4 text-slate-600">{expence.description || "—"}</td>
@@ -122,6 +128,7 @@ export default function ExpenceCrudManager({
       />
 
       <ExpenceEditorDialog
+        key={`create-${createSession}`}
         open={createOpen}
         mode="create"
         values={createValues}

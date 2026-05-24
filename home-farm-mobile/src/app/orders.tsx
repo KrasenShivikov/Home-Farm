@@ -8,6 +8,8 @@ import { formatCurrency, formatDate, formatOrderStatus } from "@/lib/format";
 import { markCreatingOrder } from "@/lib/order-create-mode";
 import { useProtectedRoute } from "@/lib/use-protected-route";
 
+import LoadingScreen from "./loading";
+
 export default function OrdersScreen() {
   const isLoggedIn = useProtectedRoute();
   const { logout, token } = useAuth();
@@ -61,6 +63,10 @@ export default function OrdersScreen() {
 
   if (!isLoggedIn) {
     return null;
+  }
+
+  if (isLoading && orders.length === 0) {
+    return <LoadingScreen />;
   }
 
   return (

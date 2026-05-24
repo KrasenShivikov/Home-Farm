@@ -17,6 +17,8 @@ export default function PlantingManager({ plantings, cropId }: PlantingManagerPr
       pluralLabel="Посеви"
       description="Управлявайте записите за посевите директно от страницата на културата."
       addButtonLabel="Добави посев"
+      showQuantity
+      showType
       createAction={createPlantingAction}
       updateAction={updatePlantingAction}
       deleteAction={deletePlantingAction}

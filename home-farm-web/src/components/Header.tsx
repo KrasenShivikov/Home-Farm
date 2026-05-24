@@ -25,20 +25,16 @@ export default async function Header() {
         </Link>
 
         <nav className="flex flex-wrap items-center gap-1">
-          <Link className={navLinkBase} href="/">
-            <AppIcon name="home" />
-            Начало
-          </Link>
+          {!session && (
+            <Link className={navLinkBase} href="/">
+              <AppIcon name="home" />
+              Начало
+            </Link>
+          )}
           {session && session.role !== "admin" && (
             <Link className={`${navLinkBase} text-emerald-700`} href="/dashboard">
               <AppIcon name="sprout" />
               Табло
-            </Link>
-          )}
-          {session && (
-            <Link className={navLinkBase} href="/dashboard/profile">
-              <AppIcon name="user" />
-              Профил
             </Link>
           )}
           {session?.role === "admin" && (
@@ -52,6 +48,10 @@ export default async function Header() {
               <span className="px-3 text-sm font-semibold text-slate-600">
                 Здравейте, {session.name}
               </span>
+              <Link className={navLinkBase} href="/dashboard/profile">
+                <AppIcon name="user" />
+                Профил
+              </Link>
               <form action={logoutAction} style={{ display: "inline" }}>
                 <button
                   type="submit"
