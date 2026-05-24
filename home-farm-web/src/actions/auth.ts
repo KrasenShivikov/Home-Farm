@@ -29,7 +29,7 @@ export async function loginAction(formData: FormData) {
   }
 
   await createSession(user.id, user.name, user.role);
-  redirect("/");
+  redirect(user.role === "admin" ? "/admin" : "/dashboard");
 }
 
 export async function registerAction(formData: FormData) {
@@ -68,7 +68,7 @@ export async function registerAction(formData: FormData) {
   }
 
   await createSession(newUser.id, newUser.name, newUser.role);
-  redirect("/");
+  redirect("/dashboard");
 }
 
 export async function logoutAction() {

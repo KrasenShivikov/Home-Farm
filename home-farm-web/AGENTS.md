@@ -16,6 +16,10 @@ NextJs + React + Tailwind + NeonDb + DrizlleORM
  - Implement Server Actions for the Web app, which use the services.
  - Implement server-side paging to prevent performance degradation or UI freezing for large datasets.
  - Use external object storage service (is needed) to upload photos and files, e.g. Cloudflare R2.
+ 
+ # API Docs
+  - Back-end API documentation: http://localhost:3000/api/docs
+  - Back-end API source code: `..\home-farm-web\src\app\api`
 
 
 # Database

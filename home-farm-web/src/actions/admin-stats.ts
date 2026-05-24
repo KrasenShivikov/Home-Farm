@@ -45,6 +45,21 @@ type ProductStats = {
   addedValue: string;
 };
 
+type OrderedProductStats = {
+  productId: number;
+  productName: string;
+  quantity: string;
+  value: string;
+};
+
+type UserOrderStats = {
+  userId: number;
+  userName: string;
+  ordersCount: number;
+  totalValue: string;
+  products: OrderedProductStats[];
+};
+
 export type AdminStats = {
   crops: CropStats[];
   products: ProductStats[];
@@ -63,6 +78,8 @@ export type AdminStats = {
   orders: {
     byStatus: { status: string; ordersCount: number; totalValue: string }[];
     byUserAndStatus: { userId: number; userName: string; status: string; ordersCount: number; totalValue: string }[];
+    products: OrderedProductStats[];
+    byUser: UserOrderStats[];
     orderLines: { totalQty: string; totalValue: string };
   };
 };
@@ -97,6 +114,21 @@ type UserStatusRow = {
   status: string;
   ordersCount: number | string;
   totalValue: string | number;
+};
+
+type UserOrderRow = {
+  userId: number | string;
+  userName: string;
+  ordersCount: number | string;
+  totalValue: string | number;
+};
+
+type UserOrderedProductRow = {
+  userId: number | string;
+  productId: number | string;
+  productName: string;
+  quantity: string | number;
+  value: string | number;
 };
 
 type OrderLinesRow = {
@@ -288,10 +320,16 @@ export async function getAdminStats(filters: AdminStatsFilters = {}): Promise<Ad
   const endTotalValue = (Number(totalProductionValue) - Number(totalWastesValue) + Number(totalProductAddedValue)).toFixed(2);
 
   // Orders stats
+  const orderDateConditions: SQL[] = [];
+  if (start) orderDateConditions.push(sql`${orders.createdAt}::date >= ${start}`);
+  if (end) orderDateConditions.push(sql`${orders.createdAt}::date <= ${end}`);
+  const orderDateWhere = orderDateConditions.length > 0 ? and(...orderDateConditions) : undefined;
+
   const ordersByStatus = await db
     .select({ status: orders.status, ordersCount: sql`count(distinct ${orders.id})::int`, totalValue: sql`coalesce(sum(${orderLines.quantity} * ${orderLines.price}),0)` })
     .from(orders)
     .leftJoin(orderLines, eq(orderLines.orderId, orders.id))
+    .where(orderDateWhere)
     .groupBy(orders.status);
 
   const byUserAndStatus = await db
@@ -299,11 +337,70 @@ export async function getAdminStats(filters: AdminStatsFilters = {}): Promise<Ad
     .from(orders)
     .innerJoin(users, eq(users.id, orders.userId))
     .leftJoin(orderLines, eq(orderLines.orderId, orders.id))
+    .where(orderDateWhere)
     .groupBy(users.id, users.name, orders.status);
+
+  const ordersByUser = await db
+    .select({
+      userId: users.id,
+      userName: users.name,
+      ordersCount: sql`count(distinct ${orders.id})::int`,
+      totalValue: sql`coalesce(sum(${orderLines.quantity} * ${orderLines.price}),0)`,
+    })
+    .from(orders)
+    .innerJoin(users, eq(users.id, orders.userId))
+    .leftJoin(orderLines, eq(orderLines.orderId, orders.id))
+    .where(orderDateWhere)
+    .groupBy(users.id, users.name)
+    .orderBy(users.name);
+
+  const orderedProducts = await db
+    .select({
+      productId: crops.id,
+      productName: crops.name,
+      quantity: sql`coalesce(sum(${orderLines.quantity}),0)`,
+      value: sql`coalesce(sum(${orderLines.quantity} * ${orderLines.price}),0)`,
+    })
+    .from(orders)
+    .innerJoin(orderLines, eq(orderLines.orderId, orders.id))
+    .innerJoin(crops, eq(crops.id, orderLines.cropId))
+    .where(orderDateWhere)
+    .groupBy(crops.id, crops.name)
+    .orderBy(crops.name);
+
+  const orderedProductsByUser = await db
+    .select({
+      userId: users.id,
+      productId: crops.id,
+      productName: crops.name,
+      quantity: sql`coalesce(sum(${orderLines.quantity}),0)`,
+      value: sql`coalesce(sum(${orderLines.quantity} * ${orderLines.price}),0)`,
+    })
+    .from(orders)
+    .innerJoin(users, eq(users.id, orders.userId))
+    .innerJoin(orderLines, eq(orderLines.orderId, orders.id))
+    .innerJoin(crops, eq(crops.id, orderLines.cropId))
+    .where(orderDateWhere)
+    .groupBy(users.id, crops.id, crops.name)
+    .orderBy(users.name, crops.name);
+
+  const userProductsMap = new Map<number, OrderedProductStats[]>();
+  for (const row of orderedProductsByUser as UserOrderedProductRow[]) {
+    const userId = Number(row.userId);
+    if (!userProductsMap.has(userId)) userProductsMap.set(userId, []);
+    userProductsMap.get(userId)!.push({
+      productId: Number(row.productId),
+      productName: row.productName,
+      quantity: String(row.quantity ?? "0"),
+      value: String(row.value ?? "0"),
+    });
+  }
 
   const orderLinesAgg = await db
     .select({ totalQty: sql`coalesce(sum(${orderLines.quantity}),0)`, totalValue: sql`coalesce(sum(${orderLines.quantity} * ${orderLines.price}),0)` })
-    .from(orderLines);
+    .from(orders)
+    .leftJoin(orderLines, eq(orderLines.orderId, orders.id))
+    .where(orderDateWhere);
 
   return {
     crops: cropsStats,
@@ -323,6 +420,19 @@ export async function getAdminStats(filters: AdminStatsFilters = {}): Promise<Ad
     orders: {
       byStatus: (ordersByStatus as OrderStatusRow[]).map((r) => ({ status: r.status, ordersCount: Number(r.ordersCount), totalValue: String(r.totalValue ?? "0") })),
       byUserAndStatus: (byUserAndStatus as UserStatusRow[]).map((r) => ({ userId: Number(r.userId), userName: r.userName, status: r.status, ordersCount: Number(r.ordersCount), totalValue: String(r.totalValue ?? "0") })),
+      products: (orderedProducts as Omit<UserOrderedProductRow, "userId">[]).map((r) => ({
+        productId: Number(r.productId),
+        productName: r.productName,
+        quantity: String(r.quantity ?? "0"),
+        value: String(r.value ?? "0"),
+      })),
+      byUser: (ordersByUser as UserOrderRow[]).map((r) => ({
+        userId: Number(r.userId),
+        userName: r.userName,
+        ordersCount: Number(r.ordersCount),
+        totalValue: String(r.totalValue ?? "0"),
+        products: userProductsMap.get(Number(r.userId)) ?? [],
+      })),
       orderLines: { totalQty: String((orderLinesAgg as OrderLinesRow[])[0]?.totalQty ?? "0"), totalValue: String((orderLinesAgg as OrderLinesRow[])[0]?.totalValue ?? "0") },
     },
   };

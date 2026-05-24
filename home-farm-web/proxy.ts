@@ -4,6 +4,7 @@ export { proxy };
 
 export const config = {
 	matcher: [
+		"/api/:path*",
 		"/((?!api|_next/static|_next/image|favicon.ico|.*\\.svg).*)",
 	],
 };

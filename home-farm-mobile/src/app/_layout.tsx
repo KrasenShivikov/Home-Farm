@@ -1,16 +1,22 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import React from 'react';
-import { useColorScheme } from 'react-native';
+import { Stack } from "expo-router";
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+import { AuthProvider } from "@/lib/auth";
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export default function RootLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <AuthProvider>
+      <Stack
+        screenOptions={{
+          headerStyle: { backgroundColor: "#ffffff" },
+          headerTitleStyle: { color: "#1f2937", fontWeight: "600" },
+          headerTintColor: "#2f7d32",
+          contentStyle: { backgroundColor: "#f7f8f5" },
+        }}>
+        <Stack.Screen name="index" options={{ title: "Home Farm" }} />
+        <Stack.Screen name="login" options={{ title: "Вход" }} />
+        <Stack.Screen name="orders" options={{ title: "Поръчки" }} />
+        <Stack.Screen name="orders/[id]" options={{ title: "Детайли" }} />
+      </Stack>
+    </AuthProvider>
   );
 }

@@ -1,0 +1,232 @@
+import { StyleSheet } from "react-native";
+
+export const orderDetailsStyles = StyleSheet.create({
+  container: {
+    gap: 16,
+    padding: 24,
+    paddingBottom: 36,
+  },
+  title: {
+    color: "#1f2937",
+    fontSize: 28,
+    fontWeight: "700",
+  },
+  status: {
+    color: "#2f7d32",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  orderDate: {
+    color: "#4b5563",
+    fontSize: 14,
+    marginTop: -8,
+  },
+  section: {
+    backgroundColor: "#ffffff",
+    borderColor: "#e5e7eb",
+    borderRadius: 8,
+    borderWidth: 1,
+    gap: 10,
+    padding: 16,
+  },
+  sectionTitle: {
+    color: "#111827",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+  input: {
+    borderColor: "#d1d5db",
+    borderRadius: 8,
+    borderWidth: 1,
+    color: "#111827",
+    fontSize: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  cancelButton: {
+    alignItems: "center",
+    backgroundColor: "#b91c1c",
+    borderRadius: 8,
+    paddingVertical: 12,
+  },
+  cancelButtonText: {
+    color: "#ffffff",
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  deleteOrderButton: {
+    alignItems: "center",
+    borderColor: "#b91c1c",
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingVertical: 12,
+  },
+  deleteOrderButtonText: {
+    color: "#b91c1c",
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  createActions: {
+    gap: 10,
+  },
+  saveOrderButton: {
+    alignItems: "center",
+    backgroundColor: "#2f7d32",
+    borderRadius: 8,
+    paddingVertical: 12,
+  },
+  saveOrderButtonText: {
+    color: "#ffffff",
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  secondaryButton: {
+    alignItems: "center",
+    borderColor: "#2f7d32",
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingVertical: 12,
+  },
+  secondaryButtonText: {
+    color: "#2f7d32",
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  selectButton: {
+    borderColor: "#d1d5db",
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+  },
+  selectText: {
+    color: "#111827",
+    fontSize: 16,
+  },
+  placeholderText: {
+    color: "#6b7280",
+    fontSize: 16,
+  },
+  cropList: {
+    borderColor: "#e5e7eb",
+    borderRadius: 8,
+    borderWidth: 1,
+    overflow: "hidden",
+  },
+  cropOption: {
+    alignItems: "center",
+    borderBottomColor: "#e5e7eb",
+    borderBottomWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 12,
+  },
+  cropName: {
+    color: "#111827",
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  cropPrice: {
+    color: "#2f7d32",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  lineEditor: {
+    borderColor: "#e5e7eb",
+    borderRadius: 8,
+    borderWidth: 1,
+    gap: 10,
+    padding: 12,
+  },
+  lineHeader: {
+    alignItems: "flex-start",
+    flexDirection: "row",
+    gap: 12,
+    justifyContent: "space-between",
+  },
+  lineActions: {
+    flexDirection: "row",
+    flexShrink: 0,
+    gap: 8,
+  },
+  lineInfo: {
+    flex: 1,
+    minWidth: 0,
+  },
+  editPanel: {
+    gap: 8,
+  },
+  editPanelActions: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  quantityInput: {
+    width: "100%",
+  },
+  saveLineButton: {
+    alignItems: "center",
+    backgroundColor: "#2f7d32",
+    borderRadius: 8,
+    flex: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  saveLineButtonText: {
+    color: "#ffffff",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  editButton: {
+    borderColor: "#2f7d32",
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  editButtonText: {
+    color: "#2f7d32",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  removeButton: {
+    borderColor: "#b91c1c",
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  removeButtonText: {
+    color: "#b91c1c",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  cancelEditButton: {
+    alignItems: "center",
+    borderColor: "#6b7280",
+    borderRadius: 8,
+    borderWidth: 1,
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+  },
+  cancelEditButtonText: {
+    color: "#4b5563",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  meta: {
+    color: "#4b5563",
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  message: {
+    color: "#166534",
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  error: {
+    color: "#b91c1c",
+    fontSize: 14,
+    lineHeight: 20,
+  },
+});
