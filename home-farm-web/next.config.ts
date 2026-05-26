@@ -4,11 +4,13 @@ import type { NextConfig } from "next";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
+const workspaceRoot = path.resolve(__dirname, "..");
+
 const nextConfig: NextConfig = {
   // Turbopack expects an absolute path for `root`.
-  // Use the workspace root to silence the inferred-root warning.
+  // Use the workspace root without hardcoding a local OS-specific path.
   turbopack: {
-    root: "C:\\Programming\\Projects\\home-farm",
+    root: workspaceRoot,
   },
 };
 
