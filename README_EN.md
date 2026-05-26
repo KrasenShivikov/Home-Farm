@@ -8,7 +8,7 @@ The application supports three main user groups:
 
 - **Visitors** can browse the welcome page, view available products for sale, and register.
 - **Users** can log in, manage their profile and delivery address, create orders, update order lines, view order status, and cancel orders when allowed.
-- **Administrators** can manage crops, processed products, crop activities, expenses, orders, and production statistics.
+- **Administrators** can manage crops, processed products, crop activities, expenses, orders, and production statistics. In the mobile app, admins can also view customer orders, search them, page through them, and update order status.
 
 Main farm workflows:
 
@@ -91,6 +91,7 @@ Responsibilities:
 - Mobile profile page.
 - Mobile order list and order details.
 - Order creation, order line editing, and order cancellation.
+- Admin mobile order management: admins see customer orders instead of only their own orders, can filter by date range, user name/email, and order status, can page through order results, and can update status from the order detail screen.
 - Communication with the web backend through REST API calls.
 
 The mobile app uses `EXPO_PUBLIC_API_BASE_URL` when configured. If not set, it defaults to `http://localhost:3000/api`.
@@ -119,6 +120,14 @@ Important API groups:
 - `POST /api/orders/:id/create_order_line`
 - `PATCH /api/orders/:id/lines/:lineId`
 - `DELETE /api/orders/:id/lines/:lineId`
+
+Order API behavior:
+
+- Normal users only receive and manage their own orders.
+- Admin users can list all customer orders.
+- `GET /api/orders` supports query parameters: `page`, `limit`, `status`, `user`, `startDate`, and `endDate`.
+- `POST /api/orders/:id/edit` lets admins update the status of any order; normal users can only update their own allowed orders.
+- Order responses include `userName` and `userEmail` for admin mobile screens.
 
 API documentation is available locally at:
 
