@@ -5,6 +5,7 @@ import { users } from "@/db/schema";
 import { createSession, logout } from "@/lib/session";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function loginAction(formData: FormData) {
@@ -29,6 +30,7 @@ export async function loginAction(formData: FormData) {
   }
 
   await createSession(user.id, user.name, user.role);
+  revalidatePath("/", "layout");
   redirect(user.role === "admin" ? "/admin" : "/dashboard");
 }
 
@@ -68,10 +70,12 @@ export async function registerAction(formData: FormData) {
   }
 
   await createSession(newUser.id, newUser.name, newUser.role);
+  revalidatePath("/", "layout");
   redirect("/dashboard");
 }
 
 export async function logoutAction() {
   await logout();
+  revalidatePath("/", "layout");
   redirect("/login");
 }

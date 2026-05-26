@@ -32,6 +32,12 @@ function getCorsHeaders(request: NextRequest) {
   };
 }
 
+function setNoStoreHeaders(response: NextResponse) {
+  response.headers.set("Cache-Control", "no-store, no-cache, max-age=0, must-revalidate");
+  response.headers.set("Pragma", "no-cache");
+  response.headers.set("Expires", "0");
+}
+
 export async function proxy(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/api")) {
     const corsHeaders = getCorsHeaders(request);
@@ -69,18 +75,27 @@ export async function proxy(request: NextRequest) {
   const authenticatedHome = role === "admin" ? "/admin" : "/dashboard";
 
   if (hasSession && publicRoutes.includes(request.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL(authenticatedHome, request.url));
+    const response = NextResponse.redirect(new URL(authenticatedHome, request.url));
+    setNoStoreHeaders(response);
+    return response;
   }
 
   if (!isPublicRoute && !hasSession) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const response = NextResponse.redirect(new URL("/login", request.url));
+    setNoStoreHeaders(response);
+    return response;
   }
 
   if (isAdminRoute && role !== "admin") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    const response = NextResponse.redirect(new URL("/dashboard", request.url));
+    setNoStoreHeaders(response);
+    return response;
   }
 
   const res = NextResponse.next();
+  if (hasSession || !isPublicRoute) {
+    setNoStoreHeaders(res);
+  }
   if (sessionValue) {
     res.headers.set("Set-Cookie", sessionValue);
   }
