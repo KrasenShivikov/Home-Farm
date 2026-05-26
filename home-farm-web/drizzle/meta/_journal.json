@@ -5,85 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1779264894497,
-      "tag": "0000_moaning_mister_fear",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1779351053943,
-      "tag": "0001_smiling_vertigo",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1779351472777,
-      "tag": "0002_milky_cloak",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1779351472778,
-      "tag": "0003_order_created_at",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1779375000000,
-      "tag": "0004_orders_shipping_columns",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1779393435000,
-      "tag": "0005_goofy_captain_flint",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1779442068688,
-      "tag": "0006_amusing_magik",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1779444346721,
-      "tag": "0007_small_tenebrous",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1779447444862,
-      "tag": "0008_neat_maestro",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "7",
-      "when": 1779623471334,
-      "tag": "0009_dusty_blockbuster",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "7",
-      "when": 1779623682096,
-      "tag": "0010_clumsy_squadron_supreme",
-      "breakpoints": true
-    },
-    {
-      "idx": 11,
-      "version": "7",
-      "when": 1779811200000,
-      "tag": "0011_performance_indexes",
+      "when": 1779829320935,
+      "tag": "0000_confused_typhoid_mary",
       "breakpoints": true
     }
   ]

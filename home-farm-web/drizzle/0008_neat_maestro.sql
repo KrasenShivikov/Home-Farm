@@ -1,1 +1,0 @@
-ALTER TABLE "products" ADD COLUMN "quantity" numeric(12, 3) DEFAULT '1.000' NOT NULL;

@@ -1,7 +1,7 @@
 import path from "path";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
-import { Pool } from "@neondatabase/serverless";
+import pg from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { sql } from "drizzle-orm";
 
@@ -26,6 +26,7 @@ if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is missing from environment");
 }
 
+const { Pool } = pg;
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const db = drizzle(pool);
 

@@ -1,1 +1,0 @@
-ALTER TABLE "expences" ADD COLUMN "value" numeric(10, 2);
