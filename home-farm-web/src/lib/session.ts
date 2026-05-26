@@ -1,4 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
+import { unstable_noStore as noStore } from "next/cache";
 import { cookies } from "next/headers";
 import { type NextRequest } from "next/server";
 
@@ -48,6 +49,8 @@ export async function logout() {
 }
 
 export async function getSession() {
+  noStore();
+
   const sessionCookie = (await cookies()).get("session")?.value;
   if (!sessionCookie) return null;
   return await decrypt(sessionCookie);
