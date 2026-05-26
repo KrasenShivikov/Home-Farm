@@ -34,7 +34,11 @@ export async function POST(
     const [result] = await db
       .update(orders)
       .set({ status })
-      .where(and(eq(orders.id, orderId), eq(orders.userId, user.userId)))
+      .where(
+        user.role === "admin"
+          ? eq(orders.id, orderId)
+          : and(eq(orders.id, orderId), eq(orders.userId, user.userId))
+      )
       .returning({ id: orders.id, status: orders.status });
 
     if (!result) {

@@ -44,6 +44,8 @@ export interface Order {
   createdAt: string;
   totalItems: number;
   totalAmount: string;
+  userName?: string | null;
+  userEmail?: string | null;
   shippingCity?: string | null;
   shippingStreet?: string | null;
   shippingPostalCode?: string | null;
@@ -110,6 +112,33 @@ export async function registerRequest(name: string, email: string, password: str
 
 export async function getOrders(token: string) {
   return apiFetch<{ orders: Order[] }>("/orders", token);
+}
+
+export interface OrderFilters {
+  startDate?: string;
+  endDate?: string;
+  status?: string;
+  user?: string;
+  page?: number;
+  limit?: number;
+}
+
+export async function getOrdersWithFilters(token: string, filters: OrderFilters = {}) {
+  const params = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(filters)) {
+    if (typeof value === "number") {
+      params.set(key, String(value));
+    } else if (value?.trim()) {
+      params.set(key, value.trim());
+    }
+  }
+
+  const query = params.toString();
+  return apiFetch<{ orders: Order[]; pagination?: { page: number; limit: number; hasMore: boolean } }>(
+    `/orders${query ? `?${query}` : ""}`,
+    token
+  );
 }
 
 export async function getOrder(token: string, id: string) {

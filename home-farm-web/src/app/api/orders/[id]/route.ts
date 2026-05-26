@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { orders, orderLines, crops } from "@/db/schema";
+import { orders, orderLines, crops, users } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { getAuthUser } from "@/lib/api-middleware";
 
@@ -19,6 +19,8 @@ interface OrderDetail {
   createdAt: string;
   totalItems: number;
   totalAmount: string;
+  userName?: string | null;
+  userEmail?: string | null;
   shippingCity?: string | null;
   shippingStreet?: string | null;
   shippingPostalCode?: string | null;
@@ -30,6 +32,8 @@ interface OrderRow {
   orderId: number;
   status: string;
   createdAt: Date | string;
+  userName: string | null;
+  userEmail: string | null;
   shippingCity: string | null;
   shippingStreet: string | null;
   shippingPostalCode: string | null;
@@ -63,6 +67,8 @@ export async function GET(
         orderId: orders.id,
         status: orders.status,
         createdAt: orders.createdAt,
+        userName: users.name,
+        userEmail: users.email,
         shippingCity: orders.shippingCity,
         shippingStreet: orders.shippingStreet,
         shippingPostalCode: orders.shippingPostalCode,
@@ -75,9 +81,14 @@ export async function GET(
         price: orderLines.price,
       })
       .from(orders)
+      .innerJoin(users, eq(users.id, orders.userId))
       .leftJoin(orderLines, eq(orderLines.orderId, orders.id))
       .leftJoin(crops, eq(crops.id, orderLines.cropId))
-      .where(and(eq(orders.id, orderId), eq(orders.userId, user.userId)));
+      .where(
+        user.role === "admin"
+          ? eq(orders.id, orderId)
+          : and(eq(orders.id, orderId), eq(orders.userId, user.userId))
+      );
 
     if (rows.length === 0) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
@@ -141,6 +152,8 @@ function buildOrderFromRows(rows: OrderRow[]) {
         createdAt: new Date(row.createdAt).toISOString(),
         totalItems: 0,
         totalAmount: "0.00",
+        userName: row.userName ?? null,
+        userEmail: row.userEmail ?? null,
         shippingCity: row.shippingCity ?? null,
         shippingStreet: row.shippingStreet ?? null,
         shippingPostalCode: row.shippingPostalCode ?? null,

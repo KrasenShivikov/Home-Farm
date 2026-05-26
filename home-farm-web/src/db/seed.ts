@@ -1,8 +1,8 @@
 import path from "path";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
+import { Pool } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/node-postgres";
 import { sql } from "drizzle-orm";
 
 import {
@@ -26,8 +26,8 @@ if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is missing from environment");
 }
 
-const neonSql = neon(process.env.DATABASE_URL);
-const db = drizzle(neonSql);
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const db = drizzle(pool);
 
 const LOAD_SIZE = {
   users: 600,
@@ -441,4 +441,7 @@ seed()
   .catch((error) => {
     console.error("Seed failed:", error);
     process.exitCode = 1;
+  })
+  .finally(async () => {
+    await pool.end();
   });

@@ -36,59 +36,67 @@ export function OrderLinesSection({
       {order.items.length === 0 ? (
         <Text style={styles.meta}>Все още няма редове.</Text>
       ) : (
-        order.items.map((item) => (
-          <View key={item.lineId} style={styles.lineEditor}>
-            <View style={styles.lineHeader}>
-              <View style={styles.lineInfo}>
-                <Text style={styles.cropName}>{item.cropName}</Text>
-                <Text style={styles.meta}>
-                  {item.quantity} x {formatCurrency(item.price)}
-                </Text>
+        order.items.map((item) => {
+          const lineTotal = Number(item.quantity || 0) * Number(item.price || 0);
+
+          return (
+            <View key={item.lineId} style={styles.lineEditor}>
+              <View style={styles.lineHeader}>
+                <View style={styles.lineInfo}>
+                  <Text style={styles.cropName}>{item.cropName}</Text>
+                  <Text style={styles.meta}>
+                    {item.quantity} x {formatCurrency(Number(item.price || 0).toFixed(2))}
+                  </Text>
+                  <View style={styles.lineValueRow}>
+                    <Text style={styles.lineValueLabel}>Сума</Text>
+                    <Text style={styles.lineValue}>{formatCurrency(lineTotal.toFixed(2))}</Text>
+                  </View>
+                </View>
+                {canEditOrder ? (
+                  <View style={styles.lineActions}>
+                    <Pressable
+                      disabled={isSaving}
+                      onPress={() => onEditLine(item)}
+                      style={styles.editButton}>
+                      <Text style={styles.editButtonText}>Редакция</Text>
+                    </Pressable>
+                    <Pressable
+                      disabled={isSaving}
+                      onPress={() => onDeleteLine(item.lineId, item.cropName)}
+                      style={styles.removeButton}>
+                      <Text style={styles.removeButtonText}>Изтрий</Text>
+                    </Pressable>
+                  </View>
+                ) : null}
               </View>
-              {canEditOrder ? (
-                <View style={styles.lineActions}>
-                  <Pressable
-                    disabled={isSaving}
-                    onPress={() => onEditLine(item)}
-                    style={styles.editButton}>
-                    <Text style={styles.editButtonText}>Редакция</Text>
-                  </Pressable>
-                  <Pressable
-                    disabled={isSaving}
-                    onPress={() => onDeleteLine(item.lineId, item.cropName)}
-                    style={styles.removeButton}>
-                    <Text style={styles.removeButtonText}>Изтрий</Text>
-                  </Pressable>
+              {canEditOrder && editingLineId === item.lineId ? (
+                <View style={styles.editPanel}>
+                  <TextInput
+                    keyboardType="decimal-pad"
+                    onChangeText={(value) => onChangeLineQuantity(item.lineId, value)}
+                    placeholder="Количество"
+                    style={[styles.input, styles.quantityInput]}
+                    value={lineQuantities[item.lineId] ?? item.quantity}
+                  />
+                  <View style={styles.editPanelActions}>
+                    <Pressable
+                      disabled={isSaving}
+                      onPress={() => onUpdateLine(item.lineId)}
+                      style={styles.saveLineButton}>
+                      <Text style={styles.saveLineButtonText}>Запази</Text>
+                    </Pressable>
+                    <Pressable
+                      disabled={isSaving}
+                      onPress={onCancelEdit}
+                      style={styles.cancelEditButton}>
+                      <Text style={styles.cancelEditButtonText}>Отказ</Text>
+                    </Pressable>
+                  </View>
                 </View>
               ) : null}
             </View>
-            {canEditOrder && editingLineId === item.lineId ? (
-              <View style={styles.editPanel}>
-                <TextInput
-                  keyboardType="decimal-pad"
-                  onChangeText={(value) => onChangeLineQuantity(item.lineId, value)}
-                  placeholder="Количество"
-                  style={[styles.input, styles.quantityInput]}
-                  value={lineQuantities[item.lineId] ?? item.quantity}
-                />
-                <View style={styles.editPanelActions}>
-                  <Pressable
-                    disabled={isSaving}
-                    onPress={() => onUpdateLine(item.lineId)}
-                    style={styles.saveLineButton}>
-                    <Text style={styles.saveLineButtonText}>Запази</Text>
-                  </Pressable>
-                  <Pressable
-                    disabled={isSaving}
-                    onPress={onCancelEdit}
-                    style={styles.cancelEditButton}>
-                    <Text style={styles.cancelEditButtonText}>Отказ</Text>
-                  </Pressable>
-                </View>
-              </View>
-            ) : null}
-          </View>
-        ))
+          );
+        })
       )}
     </View>
   );

@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, ScrollView, Text } from "react-native";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 
 import { AddOrderLineSection } from "@/components/orders/add-order-line-section";
 import { OrderActionsSection } from "@/components/orders/order-actions-section";
@@ -19,7 +19,7 @@ import {
   updateOrderStatus,
 } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { formatDate, formatOrderStatus } from "@/lib/format";
+import { formatCurrency, formatDate, formatOrderStatus } from "@/lib/format";
 import {
   clearCreatingOrder,
   isCreatingOrder as isCreatingOrderId,
@@ -28,9 +28,11 @@ import { useProtectedRoute } from "@/lib/use-protected-route";
 
 import LoadingScreen from "../loading";
 
+const statusOptions = ["Pending", "Accepted", "Completed", "Cancelled"];
+
 export default function OrderDetailsScreen() {
   const isLoggedIn = useProtectedRoute();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [order, setOrder] = useState<Order | null>(null);
   const [crops, setCrops] = useState<Crop[]>([]);
@@ -45,7 +47,9 @@ export default function OrderDetailsScreen() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isCreatingOrder, setIsCreatingOrder] = useState(() => isCreatingOrderId(id));
-  const canEditOrder = order?.status === "Pending";
+  const isAdmin = user?.role === "admin";
+  const canEditOrder = !isAdmin && order?.status === "Pending";
+  const canManageStatus = isAdmin && Boolean(order);
 
   async function loadOrder() {
     if (!token || !id) return;
@@ -216,6 +220,24 @@ export default function OrderDetailsScreen() {
     }
   }
 
+  async function handleSetStatus(status: string) {
+    if (!token || !id || !isAdmin) return;
+
+    setIsSaving(true);
+    setError(null);
+    setMessage(null);
+
+    try {
+      await updateOrderStatus(token, id, status);
+      setMessage("Статусът е обновен.");
+      await loadOrder();
+    } catch (statusError) {
+      setError(statusError instanceof Error ? statusError.message : "Статусът не може да бъде обновен.");
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
   function handleEditLine(item: OrderLine) {
     setLineQuantities((current) => ({
       ...current,
@@ -271,9 +293,46 @@ export default function OrderDetailsScreen() {
         {isLoading ? "Зареждане..." : order ? formatOrderStatus(order.status) : "Неизвестна"}
       </Text>
       {order ? <Text style={styles.orderDate}>{formatDate(order.createdAt)}</Text> : null}
+      {isAdmin && order ? (
+        <Text style={styles.meta}>
+          {order.userName || "Потребител"}{order.userEmail ? ` · ${order.userEmail}` : ""}
+        </Text>
+      ) : null}
 
       {message ? <Text style={styles.message}>{message}</Text> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
+
+      {canManageStatus ? (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Управление на статус</Text>
+          <View style={styles.statusActionList}>
+            {statusOptions.map((status) => {
+              const isCurrent = order?.status === status;
+              return (
+                <Pressable
+                  key={status}
+                  disabled={isSaving || isCurrent}
+                  onPress={() => handleSetStatus(status)}
+                  style={[styles.statusActionButton, isCurrent ? styles.statusActionButtonActive : null]}
+                >
+                  <Text style={[styles.statusActionButtonText, isCurrent ? styles.statusActionButtonTextActive : null]}>
+                    {formatOrderStatus(status)}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+      ) : null}
+
+      {order ? (
+        <View style={styles.orderTotalCard}>
+          <Text style={styles.orderTotalLabel}>Обща стойност</Text>
+          <Text style={styles.orderTotalValue}>
+            {formatCurrency(Number(order.totalAmount || 0).toFixed(2))}
+          </Text>
+        </View>
+      ) : null}
 
       {order ? (
         <OrderLinesSection
@@ -292,14 +351,16 @@ export default function OrderDetailsScreen() {
         />
       ) : null}
 
-      <OrderActionsSection
-        canEditOrder={canEditOrder}
-        isCreatingOrder={isCreatingOrder}
-        isSaving={isSaving}
-        onCancelOrder={handleCancelOrder}
-        onDeleteOrder={handleDeleteOrder}
-        onSaveCreatedOrder={handleSaveCreatedOrder}
-      />
+      {!isAdmin ? (
+        <OrderActionsSection
+          canEditOrder={canEditOrder}
+          isCreatingOrder={isCreatingOrder}
+          isSaving={isSaving}
+          onCancelOrder={handleCancelOrder}
+          onDeleteOrder={handleDeleteOrder}
+          onSaveCreatedOrder={handleSaveCreatedOrder}
+        />
+      ) : null}
 
       {canEditOrder ? (
         <AddOrderLineSection

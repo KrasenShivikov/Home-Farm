@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { orders, orderLines, crops, users } from "@/db/schema";
-import { and, desc, eq, ilike, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, or, sql, type SQL } from "drizzle-orm";
 import { getAuthUser } from "@/lib/api-middleware";
+import { isOrderStatus } from "@/lib/order-statuses";
 
 interface OrderLineWithCrop {
   lineId: number;
@@ -19,6 +20,8 @@ interface OrderWithItems {
   createdAt: string;
   totalItems: number;
   totalAmount: string;
+  userName?: string | null;
+  userEmail?: string | null;
   shippingCity?: string | null;
   shippingStreet?: string | null;
   shippingPostalCode?: string | null;
@@ -39,6 +42,8 @@ function buildOrderFromRows(rows: any[]) {
         createdAt: new Date(row.createdAt).toISOString(),
         totalItems: 0,
         totalAmount: "0.00",
+        userName: row.userName ?? null,
+        userEmail: row.userEmail ?? null,
         shippingCity: row.shippingCity ?? null,
         shippingStreet: row.shippingStreet ?? null,
         shippingPostalCode: row.shippingPostalCode ?? null,
@@ -77,17 +82,61 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "20");
     const status = searchParams.get("status") || undefined;
+    const userTerm = searchParams.get("user")?.trim();
+    const startDate = searchParams.get("startDate")?.trim();
+    const endDate = searchParams.get("endDate")?.trim();
 
     const offset = (page - 1) * limit;
-    const conditions = [eq(orders.userId, user.userId)];
+    const conditions: SQL[] = [];
 
-    if (status) {
+    if (user.role !== "admin") {
+      conditions.push(eq(orders.userId, user.userId));
+    }
+
+    if (status && isOrderStatus(status)) {
       conditions.push(eq(orders.status, status));
+    }
+
+    if (user.role === "admin" && userTerm) {
+      conditions.push(or(ilike(users.name, `%${userTerm}%`), ilike(users.email, `%${userTerm}%`))!);
+    }
+
+    if (startDate) {
+      conditions.push(sql`${orders.createdAt}::date >= ${startDate}`);
+    }
+
+    if (endDate) {
+      conditions.push(sql`${orders.createdAt}::date <= ${endDate}`);
+    }
+
+    const orderIdRows = await db
+      .select({ id: orders.id })
+      .from(orders)
+      .innerJoin(users, eq(users.id, orders.userId))
+      .where(conditions.length > 0 ? and(...conditions) : sql`true`)
+      .orderBy(desc(orders.id))
+      .limit(limit + 1)
+      .offset(offset);
+
+    const hasMore = orderIdRows.length > limit;
+    const pageOrderIds = orderIdRows.slice(0, limit).map((order) => order.id);
+
+    if (pageOrderIds.length === 0) {
+      return NextResponse.json({
+        orders: [],
+        pagination: {
+          page,
+          limit,
+          hasMore,
+        },
+      });
     }
 
     const rows = await db
       .select({
         orderId: orders.id,
+        userName: users.name,
+        userEmail: users.email,
         status: orders.status,
         createdAt: orders.createdAt,
         shippingCity: orders.shippingCity,
@@ -102,16 +151,13 @@ export async function GET(request: NextRequest) {
         price: orderLines.price,
       })
       .from(orders)
+      .innerJoin(users, eq(users.id, orders.userId))
       .leftJoin(orderLines, eq(orderLines.orderId, orders.id))
       .leftJoin(crops, eq(crops.id, orderLines.cropId))
-      .where(and(...conditions))
-      .orderBy(desc(orders.id))
-      .limit(limit + 1)
-      .offset(offset);
+      .where(inArray(orders.id, pageOrderIds))
+      .orderBy(desc(orders.id));
 
-    const hasMore = rows.length > limit;
-    const data = rows.slice(0, limit);
-    const ordersList = buildOrderFromRows(data);
+    const ordersList = buildOrderFromRows(rows);
 
     return NextResponse.json({
       orders: ordersList,

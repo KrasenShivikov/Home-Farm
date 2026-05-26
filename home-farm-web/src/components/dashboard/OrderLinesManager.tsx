@@ -23,6 +23,10 @@ export default function OrderLinesManager({ orderId, orderStatus, items, crops }
   const [editSession, setEditSession] = useState(0);
 
   const canEdit = orderStatus === "Pending";
+  const orderTotal = items.reduce(
+    (sum, item) => sum + Number(item.quantity || 0) * Number(item.price || 0),
+    0
+  );
 
   return (
     <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -95,6 +99,15 @@ export default function OrderLinesManager({ orderId, orderStatus, items, crops }
               </div>
             );
           })}
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-emerald-50 px-5 py-4">
+            <div>
+              <div className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-emerald-600">Обща стойност</div>
+              <div className="mt-1 text-sm text-emerald-900">Сума на всички редове в поръчката</div>
+            </div>
+            <div className="text-2xl font-extrabold tabular-nums text-emerald-950">
+              {orderTotal.toFixed(2)} €
+            </div>
+          </div>
         </div>
       )}
 

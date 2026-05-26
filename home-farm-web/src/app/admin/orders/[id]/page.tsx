@@ -145,6 +145,18 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                       })
                     )}
                   </tbody>
+                  {order.items.length > 0 ? (
+                    <tfoot className="border-t border-emerald-100 bg-emerald-50">
+                      <tr>
+                        <td className="px-5 py-4 text-sm font-bold uppercase tracking-[0.18em] text-emerald-700" colSpan={3}>
+                          Обща стойност
+                        </td>
+                        <td className="px-5 py-4 text-right text-lg font-extrabold tabular-nums text-emerald-950">
+                          {totalAmount} €
+                        </td>
+                      </tr>
+                    </tfoot>
+                  ) : null}
                 </table>
               </div>
             </div>
