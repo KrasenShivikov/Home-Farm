@@ -2,14 +2,44 @@ import { NextRequest, NextResponse } from "next/server";
 import { updateSession, decrypt } from "@/lib/session";
 
 const publicRoutes = ["/", "/login", "/register"];
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-};
+
+function getAllowedCorsOrigins() {
+  return (process.env.CORS_ALLOWED_ORIGINS ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+}
+
+function getCorsHeaders(request: NextRequest) {
+  const requestOrigin = request.nextUrl.origin;
+  const origin = request.headers.get("origin");
+  const allowedOrigins = getAllowedCorsOrigins();
+  const isDevelopment = process.env.NODE_ENV !== "production";
+  const isAllowedOrigin =
+    !origin ||
+    origin === requestOrigin ||
+    allowedOrigins.includes(origin) ||
+    (isDevelopment && allowedOrigins.length === 0);
+
+  if (!isAllowedOrigin) return null;
+
+  return {
+    "Access-Control-Allow-Origin": origin ?? requestOrigin,
+    "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Max-Age": "86400",
+    Vary: "Origin",
+  };
+}
 
 export async function proxy(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/api")) {
+    const corsHeaders = getCorsHeaders(request);
+
+    if (!corsHeaders) {
+      return new NextResponse(null, { status: 403 });
+    }
+
     if (request.method === "OPTIONS") {
       return new NextResponse(null, { status: 204, headers: corsHeaders });
     }

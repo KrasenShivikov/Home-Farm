@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { router } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useAuth } from "@/lib/auth";
@@ -19,17 +19,25 @@ export default function HomeScreen() {
 
         {isLoggedIn ? (
           <View style={styles.actions}>
-            <Link href="/orders" style={styles.primaryLink}>
-              Поръчки
-            </Link>
+            <Pressable onPress={() => router.push("/orders")} style={styles.primaryButton}>
+              <Text style={styles.primaryButtonText}>Поръчки</Text>
+            </Pressable>
+            <Pressable onPress={() => router.push("/profile")} style={styles.logoutButton}>
+              <Text style={styles.logoutText}>Профил</Text>
+            </Pressable>
             <Pressable onPress={logout} style={styles.logoutButton}>
               <Text style={styles.logoutText}>Изход</Text>
             </Pressable>
           </View>
         ) : (
-          <Link href="/login" style={styles.primaryLink}>
-            Вход
-          </Link>
+          <View style={styles.actions}>
+            <Pressable onPress={() => router.push("/login")} style={styles.primaryButton}>
+              <Text style={styles.primaryButtonText}>Вход</Text>
+            </Pressable>
+            <Pressable onPress={() => router.push("/register")} style={styles.logoutButton}>
+              <Text style={styles.logoutText}>Регистрация</Text>
+            </Pressable>
+          </View>
         )}
       </View>
     </View>
@@ -62,17 +70,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
   },
-  primaryLink: {
+  primaryButton: {
     marginTop: 12,
     alignSelf: "flex-start",
     backgroundColor: "#2f7d32",
     borderRadius: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+  },
+  primaryButtonText: {
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "700",
-    overflow: "hidden",
-    paddingHorizontal: 18,
-    paddingVertical: 12,
   },
   actions: {
     alignItems: "flex-start",

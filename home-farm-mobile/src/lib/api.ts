@@ -16,6 +16,17 @@ export interface ApiUser {
   name: string;
   email: string;
   role: string;
+  shippingCity?: string | null;
+  shippingStreet?: string | null;
+  shippingPostalCode?: string | null;
+  shippingCountry?: string | null;
+}
+
+export interface UserProfile extends ApiUser {
+  shippingCity: string;
+  shippingStreet: string;
+  shippingPostalCode: string;
+  shippingCountry: string;
 }
 
 export interface OrderLine {
@@ -90,6 +101,13 @@ export async function loginRequest(email: string, password: string) {
   });
 }
 
+export async function registerRequest(name: string, email: string, password: string) {
+  return apiFetch<{ token: string; user: ApiUser }>("/auth/register", null, {
+    method: "POST",
+    body: JSON.stringify({ name, email, password }),
+  });
+}
+
 export async function getOrders(token: string) {
   return apiFetch<{ orders: Order[] }>("/orders", token);
 }
@@ -108,6 +126,27 @@ export async function createOrder(token: string) {
 
 export async function getCrops(token: string) {
   return apiFetch<{ crops: Crop[] }>("/crops?forSale=true", token);
+}
+
+export async function getProfile(token: string) {
+  return apiFetch<{ user: UserProfile }>("/profile", token);
+}
+
+export async function updateProfile(
+  token: string,
+  values: {
+    name: string;
+    email: string;
+    shippingCity: string;
+    shippingStreet: string;
+    shippingPostalCode: string;
+    shippingCountry: string;
+  }
+) {
+  return apiFetch<{ user: UserProfile }>("/profile", token, {
+    method: "PATCH",
+    body: JSON.stringify(values),
+  });
 }
 
 export async function updateOrderStatus(token: string, id: string, status: string) {

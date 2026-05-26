@@ -2,13 +2,17 @@ export const ORDER_STATUSES = ["Pending", "Accepted", "Completed", "Cancelled"] 
 
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
-const ORDER_STATUS_LABELS: Record<string, string> = {
-  Pending: "Чакаща",
+export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   Accepted: "Приета",
-  Completed: "Завършена",
   Cancelled: "Отказана",
+  Completed: "Завършена",
+  Pending: "Чакаща",
 };
 
+export function isOrderStatus(value: string): value is OrderStatus {
+  return (ORDER_STATUSES as readonly string[]).includes(value);
+}
+
 export function formatOrderStatus(status: string) {
-  return ORDER_STATUS_LABELS[status] ?? status;
+  return isOrderStatus(status) ? ORDER_STATUS_LABELS[status] : status;
 }

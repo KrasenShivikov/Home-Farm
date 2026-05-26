@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
@@ -54,6 +55,10 @@ export default function LoginScreen() {
       <Pressable disabled={isLoggingIn} onPress={handleLogin} style={styles.button}>
         <Text style={styles.buttonText}>{isLoggingIn ? "Влизане..." : "Вход"}</Text>
       </Pressable>
+
+      <Pressable disabled={isLoggingIn} onPress={() => router.replace("/register")} style={styles.linkButton}>
+        <Text style={styles.linkText}>Нямате профил? Регистрация</Text>
+      </Pressable>
     </View>
   );
 }
@@ -96,6 +101,15 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#ffffff",
     fontSize: 16,
+    fontWeight: "700",
+  },
+  linkButton: {
+    alignItems: "center",
+    paddingVertical: 12,
+  },
+  linkText: {
+    color: "#2f7d32",
+    fontSize: 15,
     fontWeight: "700",
   },
   error: {

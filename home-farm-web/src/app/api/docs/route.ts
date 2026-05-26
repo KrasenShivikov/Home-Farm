@@ -17,6 +17,7 @@ export async function GET() {
     .method { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-right: 8px; }
     .get { background: #dcfce7; color: #166534; }
     .post { background: #dbeafe; color: #1e40af; }
+    .patch { background: #fef3c7; color: #92400e; }
     .endpoint { font-family: 'Courier New', monospace; color: #666; font-size: 14px; margin: 4px 0; }
     .description { margin: 8px 0; color: #555; }
     .param { background: #f8f9fa; padding: 8px 12px; border-radius: 4px; margin: 4px 0; font-size: 13px; }
@@ -36,7 +37,7 @@ export async function GET() {
     <div class="auth-note">
       <strong>⚠️ Authentication:</strong> All endpoints (except login) require a JWT token. Send it in the Authorization header:<br>
       <code>Authorization: Bearer &lt;token&gt;</code><br>
-      The token is returned from POST /api/auth/login.
+      The token is returned from POST /api/auth/login and POST /api/auth/register.
     </div>
 
     <h2>Authentication</h2>
@@ -58,6 +59,78 @@ export async function GET() {
     "name": "John",
     "email": "user@example.com",
     "role": "user"
+  }
+}</pre>
+    </div>
+
+    <h3><span class="method post">POST</span><span class="endpoint">/api/auth/register</span></h3>
+    <p class="description">Create a new user account. Returns a JWT token and the created user.</p>
+    <div class="param">
+      <div class="param-name">Body:</div>
+      <pre>{
+  "name": "John",
+  "email": "user@example.com",
+  "password": "secret123"
+}</pre>
+    </div>
+    <div class="param">
+      <div class="param-name">Response:</div>
+      <pre>{
+  "token": "eyJ...",
+  "user": {
+    "id": 1,
+    "name": "John",
+    "email": "user@example.com",
+    "role": "user"
+  }
+}</pre>
+    </div>
+
+    <h2>Profile</h2>
+
+    <h3><span class="method get">GET</span><span class="endpoint">/api/profile</span></h3>
+    <p class="description">Get the authenticated user's profile and saved shipping details.</p>
+    <div class="param">
+      <div class="param-name">Response:</div>
+      <pre>{
+  "user": {
+    "id": 1,
+    "name": "John",
+    "email": "user@example.com",
+    "role": "user",
+    "shippingCity": "Sofia",
+    "shippingStreet": "Main St",
+    "shippingPostalCode": "1000",
+    "shippingCountry": "Bulgaria"
+  }
+}</pre>
+    </div>
+
+    <h3><span class="method patch">PATCH</span><span class="endpoint">/api/profile</span></h3>
+    <p class="description">Update the authenticated user's profile and shipping details.</p>
+    <div class="param">
+      <div class="param-name">Body:</div>
+      <pre>{
+  "name": "John",
+  "email": "user@example.com",
+  "shippingCity": "Sofia",
+  "shippingStreet": "Main St",
+  "shippingPostalCode": "1000",
+  "shippingCountry": "Bulgaria"
+}</pre>
+    </div>
+    <div class="param">
+      <div class="param-name">Response:</div>
+      <pre>{
+  "user": {
+    "id": 1,
+    "name": "John",
+    "email": "user@example.com",
+    "role": "user",
+    "shippingCity": "Sofia",
+    "shippingStreet": "Main St",
+    "shippingPostalCode": "1000",
+    "shippingCountry": "Bulgaria"
   }
 }</pre>
     </div>

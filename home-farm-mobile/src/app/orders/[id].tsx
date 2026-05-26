@@ -136,23 +136,6 @@ export default function OrderDetailsScreen() {
     router.replace("/orders");
   }
 
-  function confirmDeleteOrder() {
-    Alert.alert(
-      "Изтриване на поръчка?",
-      "Поръчката и всички нейни редове ще бъдат изтрити.",
-      [
-        { text: "Отказ", style: "cancel" },
-        {
-          text: "Изтрий",
-          style: "destructive",
-          onPress: () => {
-            void handleDeleteOrder();
-          },
-        },
-      ]
-    );
-  }
-
   async function handleDeleteOrder() {
     if (!token || !id) return;
 
@@ -314,7 +297,7 @@ export default function OrderDetailsScreen() {
         isCreatingOrder={isCreatingOrder}
         isSaving={isSaving}
         onCancelOrder={handleCancelOrder}
-        onDeleteOrder={confirmDeleteOrder}
+        onDeleteOrder={handleDeleteOrder}
         onSaveCreatedOrder={handleSaveCreatedOrder}
       />
 

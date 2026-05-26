@@ -5,8 +5,7 @@
   "main": "index.js",
   "workspaces": [
     "home-farm-mobile",
-    "home-farm-web",
-    "home-farm-shared"
+    "home-farm-web"
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev -w home-farm-web\" \"npm run start -w home-farm-mobile\"",

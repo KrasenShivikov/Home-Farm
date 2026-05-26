@@ -16,6 +16,18 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## API CORS
+
+API routes under `/api/*` allow cross-origin requests for the mobile app and Expo web.
+In development, all origins are allowed when `CORS_ALLOWED_ORIGINS` is not set.
+In production, set an explicit comma-separated allowlist:
+
+```bash
+CORS_ALLOWED_ORIGINS=https://your-domain.com,https://mobile-preview-domain.com
+```
+
+Same-origin requests are always allowed.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

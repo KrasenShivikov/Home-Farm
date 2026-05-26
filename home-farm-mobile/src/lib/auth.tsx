@@ -1,14 +1,17 @@
 import { router } from "expo-router";
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from "react";
 
-import { ApiUser, loginRequest } from "./api";
+import { ApiUser, loginRequest, registerRequest } from "./api";
 
 interface AuthContextValue {
   isLoggedIn: boolean;
   isLoggingIn: boolean;
+  isRegistering: boolean;
   token: string | null;
   user: ApiUser | null;
   login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
+  setUser: (user: ApiUser) => void;
   logout: () => void;
 }
 
@@ -18,6 +21,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<ApiUser | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   async function login(email: string, password: string) {
     setIsLoggingIn(true);
@@ -31,6 +35,18 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   }
 
+  async function register(name: string, email: string, password: string) {
+    setIsRegistering(true);
+    try {
+      const result = await registerRequest(name.trim(), email.trim(), password);
+      setToken(result.token);
+      setUser(result.user);
+      router.replace("/orders");
+    } finally {
+      setIsRegistering(false);
+    }
+  }
+
   function logout() {
     setToken(null);
     setUser(null);
@@ -41,12 +57,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
     () => ({
       isLoggedIn: !!token,
       isLoggingIn,
+      isRegistering,
       token,
       user,
       login,
+      register,
+      setUser,
       logout,
     }),
-    [isLoggingIn, token, user]
+    [isLoggingIn, isRegistering, token, user]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

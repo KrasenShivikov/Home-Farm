@@ -1,6 +1,6 @@
-import { Link, router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { createOrder, getOrders, Order } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
@@ -71,48 +71,57 @@ export default function OrdersScreen() {
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={logout} style={styles.topLogoutButton}>
-        <Text style={styles.topLogoutButtonText}>Изход</Text>
-      </Pressable>
-      <FlatList
-        data={orders}
-        keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={styles.list}
-        ListHeaderComponent={
-          <View style={styles.header}>
-            <View>
-              <Text style={styles.title}>Поръчки</Text>
-              {isLoading ? <Text style={styles.meta}>Зареждане...</Text> : null}
-              {error ? <Text style={styles.error}>{error}</Text> : null}
-            </View>
-            <View style={styles.headerActions}>
-              <Pressable disabled={isCreating} onPress={handleCreateOrder} style={styles.createButton}>
-                <Text style={styles.createButtonText}>
-                  {isCreating ? "Създаване..." : "Нова поръчка"}
-                </Text>
-              </Pressable>
-            </View>
+      <View style={styles.topActions}>
+        <Pressable onPress={() => router.push("/profile")} style={styles.topActionButton}>
+          <Text style={styles.topActionButtonText}>Профил</Text>
+        </Pressable>
+        <Pressable onPress={logout} style={styles.topActionButton}>
+          <Text style={styles.topActionButtonText}>Изход</Text>
+        </Pressable>
+      </View>
+      <ScrollView contentContainerStyle={styles.list}>
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.title}>Поръчки</Text>
+            {isLoading ? <Text style={styles.meta}>Зареждане...</Text> : null}
+            {error ? <Text style={styles.error}>{error}</Text> : null}
           </View>
-        }
-        ListEmptyComponent={
-          !isLoading && !error ? <Text style={styles.meta}>Няма намерени поръчки.</Text> : null
-        }
-        renderItem={({ item }) => (
-          <Link href={{ pathname: "/orders/[id]", params: { id: String(item.id) } }} asChild>
-            <Pressable style={styles.row}>
-              <View>
-                <Text style={styles.orderId}>Поръчка #{item.id}</Text>
-                <Text style={styles.date}>{formatDate(item.createdAt)}</Text>
-                <Text style={styles.meta}>{item.shippingCity || "Няма град"}</Text>
-              </View>
-              <View style={styles.right}>
-                <Text style={styles.status}>{formatOrderStatus(item.status)}</Text>
-                <Text style={styles.total}>{formatCurrency(item.totalAmount)}</Text>
-              </View>
+          <View style={styles.headerActions}>
+            <Pressable disabled={isCreating} onPress={handleCreateOrder} style={styles.createButton}>
+              <Text style={styles.createButtonText}>
+                {isCreating ? "Създаване..." : "Нова поръчка"}
+              </Text>
             </Pressable>
-          </Link>
-        )}
-      />
+          </View>
+        </View>
+
+        {!isLoading && !error && orders.length === 0 ? (
+          <Text style={styles.meta}>Няма намерени поръчки.</Text>
+        ) : null}
+
+        {orders.map((item) => (
+          <Pressable
+            key={item.id}
+            onPress={() =>
+              router.push({
+                pathname: "/orders/[id]",
+                params: { id: String(item.id) },
+              })
+            }
+            style={styles.row}
+          >
+            <View>
+              <Text style={styles.orderId}>Поръчка #{item.id}</Text>
+              <Text style={styles.date}>{formatDate(item.createdAt)}</Text>
+              <Text style={styles.meta}>{item.shippingCity || "Няма град"}</Text>
+            </View>
+            <View style={styles.right}>
+              <Text style={styles.status}>{formatOrderStatus(item.status)}</Text>
+              <Text style={styles.total}>{formatCurrency(item.totalAmount)}</Text>
+            </View>
+          </Pressable>
+        ))}
+      </ScrollView>
     </View>
   );
 }
@@ -121,13 +130,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  topLogoutButton: {
+  topActions: {
+    flexDirection: "row",
+    gap: 16,
     position: "absolute",
     right: 24,
     top: 18,
     zIndex: 1,
   },
-  topLogoutButtonText: {
+  topActionButton: {
+    paddingVertical: 4,
+  },
+  topActionButtonText: {
     color: "#2f7d32",
     fontSize: 15,
     fontWeight: "700",
