@@ -78,6 +78,13 @@
       "when": 1779623682096,
       "tag": "0010_clumsy_squadron_supreme",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1779811200000,
+      "tag": "0011_performance_indexes",
+      "breakpoints": true
     }
   ]
 }

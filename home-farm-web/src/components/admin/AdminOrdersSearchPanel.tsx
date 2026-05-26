@@ -18,6 +18,7 @@ export default function AdminOrdersSearchPanel({
 }: AdminOrdersSearchPanelProps) {
   return (
     <form className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" method="get">
+      <input name="page" type="hidden" value="1" />
       <div className="border-b border-slate-100 bg-slate-50/80 px-5 py-4">
         <p className="text-[0.68rem] font-bold uppercase tracking-[0.24em] text-slate-400">Филтри</p>
         <h2 className="mt-1 text-lg font-semibold text-slate-950">Търсене на поръчки</h2>

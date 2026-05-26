@@ -3,18 +3,32 @@
 import Link from "next/link";
 
 import type { AdminOrder } from "@/actions/admin-orders";
-import { PaginationControls, usePagination } from "@/components/Pagination";
 import { formatBulgarianDate } from "@/lib/format-date";
 
 import OrderStatusBadge from "./OrderStatusBadge";
 
 type AdminOrdersListProps = {
   orders: AdminOrder[];
+  page: number;
+  pageCount: number;
+  pageSize: number;
+  totalItems: number;
+  filters: {
+    user?: string;
+    startDate?: string;
+    endDate?: string;
+    status?: string;
+  };
 };
 
-export default function AdminOrdersList({ orders }: AdminOrdersListProps) {
-  const { page, pageCount, pageItems, pageSize, setPage } = usePagination(orders, 10);
-
+export default function AdminOrdersList({
+  orders,
+  page,
+  pageCount,
+  pageSize,
+  totalItems,
+  filters,
+}: AdminOrdersListProps) {
   if (orders.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-slate-300 bg-white/70 px-5 py-10 text-center text-sm text-slate-500">
@@ -25,7 +39,7 @@ export default function AdminOrdersList({ orders }: AdminOrdersListProps) {
 
   return (
     <div className="space-y-4">
-      {pageItems.map((order) => (
+      {orders.map((order) => (
         <article key={order.id} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md">
           <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 bg-slate-50/80 px-5 py-4">
             <div className="min-w-0">
@@ -63,13 +77,79 @@ export default function AdminOrdersList({ orders }: AdminOrdersListProps) {
         </article>
       ))}
 
-      <PaginationControls
+      <ServerPaginationControls
+        filters={filters}
         page={page}
         pageCount={pageCount}
-        totalItems={orders.length}
+        totalItems={totalItems}
         pageSize={pageSize}
-        onPageChange={setPage}
       />
+    </div>
+  );
+}
+
+function buildPageHref(filters: AdminOrdersListProps["filters"], page: number) {
+  const params = new URLSearchParams();
+
+  if (filters.user) params.set("user", filters.user);
+  if (filters.startDate) params.set("startDate", filters.startDate);
+  if (filters.endDate) params.set("endDate", filters.endDate);
+  if (filters.status) params.set("status", filters.status);
+  if (page > 1) params.set("page", String(page));
+
+  const query = params.toString();
+  return query ? `/admin/orders?${query}` : "/admin/orders";
+}
+
+function ServerPaginationControls({
+  filters,
+  page,
+  pageCount,
+  totalItems,
+  pageSize,
+}: {
+  filters: AdminOrdersListProps["filters"];
+  page: number;
+  pageCount: number;
+  totalItems: number;
+  pageSize: number;
+}) {
+  if (totalItems <= pageSize) return null;
+
+  const previousPage = Math.max(1, page - 1);
+  const nextPage = Math.min(pageCount, page + 1);
+
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-600">
+      <span>
+        Страница {page} от {pageCount} · Общо {totalItems}
+      </span>
+      <div className="flex items-center gap-2">
+        {page <= 1 ? (
+          <span className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 font-semibold text-slate-400">
+            Назад
+          </span>
+        ) : (
+          <Link
+            className="rounded-full border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700 transition-all hover:-translate-y-px hover:shadow-sm"
+            href={buildPageHref(filters, previousPage)}
+          >
+            Назад
+          </Link>
+        )}
+        {page >= pageCount ? (
+          <span className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 font-semibold text-slate-400">
+            Напред
+          </span>
+        ) : (
+          <Link
+            className="rounded-full border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700 transition-all hover:-translate-y-px hover:shadow-sm"
+            href={buildPageHref(filters, nextPage)}
+          >
+            Напред
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

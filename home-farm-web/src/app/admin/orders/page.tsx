@@ -10,15 +10,23 @@ export const metadata = {
 export default async function AdminOrdersPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ user?: string; date?: string; startDate?: string; endDate?: string; status?: string }>;
+  searchParams?: Promise<{
+    user?: string;
+    date?: string;
+    startDate?: string;
+    endDate?: string;
+    status?: string;
+    page?: string;
+  }>;
 }) {
   const params = (await searchParams) ?? {};
   const user = params.user ?? "";
   const startDate = params.startDate ?? params.date ?? "";
   const endDate = params.endDate ?? params.date ?? "";
   const status = params.status ?? "";
+  const page = Number(params.page ?? "1");
 
-  const orders = await getAdminOrders({ user, startDate, endDate, status });
+  const ordersPage = await getAdminOrders({ user, startDate, endDate, status, page, pageSize: 10 });
 
   return (
     <section className="container py-10">
@@ -31,7 +39,14 @@ export default async function AdminOrdersPage({
 
       <AdminOrdersSearchPanel user={user} startDate={startDate} endDate={endDate} status={status} />
 
-      <AdminOrdersList orders={orders} />
+      <AdminOrdersList
+        orders={ordersPage.orders}
+        page={ordersPage.page}
+        pageCount={ordersPage.pageCount}
+        pageSize={ordersPage.pageSize}
+        totalItems={ordersPage.totalItems}
+        filters={{ user, startDate, endDate, status }}
+      />
     </section>
   );
 }

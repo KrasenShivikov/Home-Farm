@@ -2,6 +2,7 @@ import {
   boolean,
   date,
   integer,
+  index,
   numeric,
   pgTable,
   primaryKey,
@@ -42,7 +43,9 @@ export const crops = pgTable("crops", {
   forSale: boolean("for_sale").notNull().default(false),
   price: numeric("price", { precision: 10, scale: 2 }),
   description: text("description"),
-});
+}, (table) => ({
+  cropsForSaleNameIdx: index("crops_for_sale_name_idx").on(table.forSale, table.name),
+}));
 
 export const wastes = pgTable("wastes", {
   id: serial("id").primaryKey(),
@@ -57,7 +60,11 @@ export const wastes = pgTable("wastes", {
     .notNull()
     .defaultNow(),
   description: text("description"),
-});
+}, (table) => ({
+  wastesCropDateIdx: index("wastes_crop_date_idx").on(table.cropId, table.date),
+  wastesDateIdx: index("wastes_date_idx").on(table.date),
+  wastesTypeIdx: index("wastes_type_idx").on(table.type),
+}));
 
 export const plantings = pgTable("plantings", {
   id: serial("id").primaryKey(),
@@ -72,7 +79,10 @@ export const plantings = pgTable("plantings", {
     .notNull()
     .defaultNow(),
   description: text("description"),
-});
+}, (table) => ({
+  plantingsCropDateIdx: index("plantings_crop_date_idx").on(table.cropId, table.date),
+  plantingsDateIdx: index("plantings_date_idx").on(table.date),
+}));
 
 export const sprayings = pgTable("sprayings", {
   id: serial("id").primaryKey(),
@@ -86,7 +96,10 @@ export const sprayings = pgTable("sprayings", {
     .notNull()
     .defaultNow(),
   description: text("description"),
-});
+}, (table) => ({
+  sprayingsCropDateIdx: index("sprayings_crop_date_idx").on(table.cropId, table.date),
+  sprayingsDateIdx: index("sprayings_date_idx").on(table.date),
+}));
 
 export const harvestings = pgTable("harvestings", {
   id: serial("id").primaryKey(),
@@ -100,7 +113,10 @@ export const harvestings = pgTable("harvestings", {
     .notNull()
     .defaultNow(),
   description: text("description"),
-});
+}, (table) => ({
+  harvestingsCropDateIdx: index("harvestings_crop_date_idx").on(table.cropId, table.date),
+  harvestingsDateIdx: index("harvestings_date_idx").on(table.date),
+}));
 
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
@@ -108,7 +124,10 @@ export const products = pgTable("products", {
   date: date("date").notNull(),
   quantity: numeric("quantity", { precision: 12, scale: 3 }).notNull().default("1.000"),
   price: numeric("price", { precision: 10, scale: 2 }),
-});
+}, (table) => ({
+  productsDateIdx: index("products_date_idx").on(table.date),
+  productsNameIdx: index("products_name_idx").on(table.name),
+}));
 
 export const expencesType = pgTable("expences_type", {
   id: serial("id").primaryKey(),
@@ -124,7 +143,10 @@ export const expences = pgTable("expences", {
   description: text("description"),
   date: date("date").notNull(),
   value: numeric("value", { precision: 10, scale: 2 }),
-});
+}, (table) => ({
+  expencesDateIdx: index("expences_date_idx").on(table.date),
+  expencesTypeDateIdx: index("expences_type_date_idx").on(table.expencesTypeId, table.date),
+}));
 
 export const cropProducts = pgTable(
   "crop_products",
@@ -139,6 +161,7 @@ export const cropProducts = pgTable(
   },
   (table) => ({
     pk: primaryKey({ columns: [table.cropId, table.productId] }),
+    cropProductsProductIdx: index("crop_products_product_idx").on(table.productId),
   })
 );
 
@@ -153,7 +176,11 @@ export const orders = pgTable("orders", {
   shippingStreet: text("shipping_street"),
   shippingPostalCode: text("shipping_postal_code"),
   shippingCountry: text("shipping_country"),
-});
+}, (table) => ({
+  ordersUserStatusIdIdx: index("orders_user_status_id_idx").on(table.userId, table.status, table.id),
+  ordersStatusCreatedIdx: index("orders_status_created_idx").on(table.status, table.createdAt),
+  ordersCreatedIdx: index("orders_created_idx").on(table.createdAt),
+}));
 
 export const orderLines = pgTable("order_lines", {
   id: serial("id").primaryKey(),
@@ -165,4 +192,7 @@ export const orderLines = pgTable("order_lines", {
     .references(() => crops.id, { onDelete: "restrict" }),
   quantity: numeric("quantity", { precision: 12, scale: 3 }).notNull(),
   price: numeric("price", { precision: 10, scale: 2 }).notNull(),
-});
+}, (table) => ({
+  orderLinesOrderCropIdx: index("order_lines_order_crop_idx").on(table.orderId, table.cropId),
+  orderLinesCropIdx: index("order_lines_crop_idx").on(table.cropId),
+}));

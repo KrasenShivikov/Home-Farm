@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import { crops, orderLines, orders, users } from "@/db/schema";
-import { and, desc, eq, gte, ilike, lt, sql } from "drizzle-orm";
+import { and, count, desc, eq, gte, inArray, lt, sql } from "drizzle-orm";
 import { getSession } from "@/lib/session";
 import { ORDER_STATUSES, type OrderStatus } from "@/lib/order-statuses";
 import { revalidatePath } from "next/cache";
@@ -122,9 +122,19 @@ export type AdminOrdersFilter = {
   startDate?: string;
   endDate?: string;
   status?: string;
+  page?: number;
+  pageSize?: number;
 };
 
-export async function getAdminOrders(filters: AdminOrdersFilter = {}): Promise<AdminOrder[]> {
+export type AdminOrdersPageResult = {
+  orders: AdminOrder[];
+  page: number;
+  pageCount: number;
+  pageSize: number;
+  totalItems: number;
+};
+
+function buildAdminOrderConditions(filters: AdminOrdersFilter) {
   const conditions = [];
 
   if (filters.user) {
@@ -152,6 +162,40 @@ export async function getAdminOrders(filters: AdminOrdersFilter = {}): Promise<A
     conditions.push(eq(orders.status, filters.status));
   }
 
+  return conditions;
+}
+
+export async function getAdminOrders(filters: AdminOrdersFilter = {}): Promise<AdminOrdersPageResult> {
+  const pageSize = Math.min(Math.max(filters.pageSize ?? 10, 1), 100);
+  const requestedPage = Math.max(filters.page ?? 1, 1);
+  const conditions = buildAdminOrderConditions(filters);
+  const where = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const [{ totalItems }] = await db
+    .select({ totalItems: count() })
+    .from(orders)
+    .innerJoin(users, eq(users.id, orders.userId))
+    .where(where);
+
+  const pageCount = Math.max(1, Math.ceil(totalItems / pageSize));
+  const page = Math.min(requestedPage, pageCount);
+  const offset = (page - 1) * pageSize;
+
+  const pageRows = await db
+    .select({ orderId: orders.id })
+    .from(orders)
+    .innerJoin(users, eq(users.id, orders.userId))
+    .where(where)
+    .orderBy(desc(orders.id))
+    .limit(pageSize)
+    .offset(offset);
+
+  const orderIds = pageRows.map((row) => row.orderId);
+
+  if (orderIds.length === 0) {
+    return { orders: [], page, pageCount, pageSize, totalItems };
+  }
+
   const rows = await db
     .select({
       orderId: orders.id,
@@ -175,10 +219,16 @@ export async function getAdminOrders(filters: AdminOrdersFilter = {}): Promise<A
     .innerJoin(users, eq(users.id, orders.userId))
     .leftJoin(orderLines, eq(orderLines.orderId, orders.id))
     .leftJoin(crops, eq(crops.id, orderLines.cropId))
-    .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .where(inArray(orders.id, orderIds))
     .orderBy(desc(orders.id));
 
-  return buildOrdersFromRows(rows as JoinedOrderRow[]);
+  return {
+    orders: buildOrdersFromRows(rows as JoinedOrderRow[]),
+    page,
+    pageCount,
+    pageSize,
+    totalItems,
+  };
 }
 
 export async function getAdminOrderById(orderId: number): Promise<AdminOrder | null> {

@@ -28,6 +28,23 @@ CORS_ALLOWED_ORIGINS=https://your-domain.com,https://mobile-preview-domain.com
 
 Same-origin requests are always allowed.
 
+## Performance Seed Data
+
+Run migrations, then populate the database with a Bulgarian load-test dataset:
+
+```bash
+npm run db:migrate
+npm run db:seed
+```
+
+The seed script truncates the primary tables and inserts more than 20,000 meaningful records across users, crops, products, crop activities, expenses, orders, and order lines. It also creates an admin test user:
+
+```text
+klient.0001@example.bg / password123
+```
+
+Performance indexes are defined in `src/db/schema.ts` and migration `drizzle/0011_performance_indexes.sql`.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

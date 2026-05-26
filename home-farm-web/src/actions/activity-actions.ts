@@ -11,14 +11,7 @@ export type ActivityActionState = {
   success?: string;
 };
 
-type ActivityValues = {
-  id: number | null;
-  cropId: number;
-  date: string;
-  quantity: string;
-  type: ActivityType;
-  description: string | null;
-};
+type ActivityTable = typeof harvestings | typeof sprayings | typeof wastes;
 
 function getActivityValues(formData: FormData) {
   const idValue = formData.get("id");
@@ -54,7 +47,7 @@ function getActivityValues(formData: FormData) {
 }
 
 async function createActivity(
-  table: typeof harvestings | typeof sprayings | typeof wastes,
+  table: ActivityTable,
   successMessage: string,
   formData: FormData
 ): Promise<ActivityActionState> {
@@ -64,14 +57,24 @@ async function createActivity(
     return { error: values.error };
   }
 
-  await db.insert(table).values({
+  const insertValues = {
     cropId: values.cropId,
     date: values.date,
     quantity: values.quantity,
-    type: values.type,
     description: values.description,
     createdFrom: "manual",
-  });
+  };
+
+  if (table === wastes) {
+    await db.insert(table).values({
+      ...insertValues,
+      type: values.type,
+    });
+  } else if (table === harvestings) {
+    await db.insert(table).values(insertValues);
+  } else {
+    await db.insert(table).values(insertValues);
+  }
 
   revalidatePath(`/admin/crops/${values.cropId}`);
 
@@ -79,7 +82,7 @@ async function createActivity(
 }
 
 async function updateActivity(
-  table: typeof harvestings | typeof sprayings | typeof wastes,
+  table: ActivityTable,
   successMessage: string,
   formData: FormData
 ): Promise<ActivityActionState> {
@@ -93,15 +96,25 @@ async function updateActivity(
     return { error: "Невалиден запис." };
   }
 
-  await db
-    .update(table)
-    .set({
-      date: values.date,
-      quantity: values.quantity,
-      type: values.type,
-      description: values.description,
-    })
-    .where(eq(table.id, values.id));
+  const updateValues = {
+    date: values.date,
+    quantity: values.quantity,
+    description: values.description,
+  };
+
+  if (table === wastes) {
+    await db
+      .update(table)
+      .set({
+        ...updateValues,
+        type: values.type,
+      })
+      .where(eq(table.id, values.id));
+  } else if (table === harvestings) {
+    await db.update(table).set(updateValues).where(eq(table.id, values.id));
+  } else {
+    await db.update(table).set(updateValues).where(eq(table.id, values.id));
+  }
 
   revalidatePath(`/admin/crops/${values.cropId}`);
 
@@ -109,7 +122,7 @@ async function updateActivity(
 }
 
 async function deleteActivity(
-  table: typeof harvestings | typeof sprayings | typeof wastes,
+  table: ActivityTable,
   successMessage: string,
   formData: FormData
 ): Promise<ActivityActionState> {
