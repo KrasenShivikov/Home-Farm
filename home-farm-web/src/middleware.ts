@@ -38,7 +38,7 @@ function setNoStoreHeaders(response: NextResponse) {
   response.headers.set("Expires", "0");
 }
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/api")) {
     const corsHeaders = getCorsHeaders(request);
 
@@ -104,7 +104,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/api/:path*",
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.svg).*)",
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

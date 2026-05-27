@@ -12,6 +12,23 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: workspaceRoot,
   },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Netlify-CDN-Cache-Control",
+            value: "s-maxage=0, stale-while-revalidate=0",
+          },
+          {
+            key: "CDN-Cache-Control",
+            value: "no-store, no-cache, max-age=0, must-revalidate",
+          }
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
