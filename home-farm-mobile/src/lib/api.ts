@@ -4,11 +4,16 @@ const DEFAULT_API_BASE_URL = "http://localhost:3000/api";
 const CONFIGURED_API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 function getApiBaseUrl() {
-  if (Platform.OS === "web" && typeof window !== "undefined") {
-    return `${window.location.protocol}//${window.location.hostname}:3000/api`;
+  if (CONFIGURED_API_BASE_URL?.trim()) {
+    return CONFIGURED_API_BASE_URL.trim().replace(/\/$/, "");
   }
 
-  return CONFIGURED_API_BASE_URL ?? DEFAULT_API_BASE_URL;
+  if (Platform.OS === "web" && typeof window !== "undefined") {
+    const isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+    return isLocalhost ? DEFAULT_API_BASE_URL : `${window.location.origin}/api`;
+  }
+
+  return DEFAULT_API_BASE_URL;
 }
 
 export interface ApiUser {
