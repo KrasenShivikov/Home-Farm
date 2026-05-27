@@ -8,6 +8,8 @@
     "userInterfaceStyle": "light",
     "ios": {},
     "android": {
+      "package": "com.homefarm.mobile",
+      "versionCode": 1,
       "predictiveBackGestureEnabled": false
     },
     "web": {
@@ -19,6 +21,13 @@
     "experiments": {
       "typedRoutes": false,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0b5e8c99-1acb-4140-9711-3d7ad3e0cd02"
+      }
+    },
+    "owner": "krasenshivikov"
   }
 }
