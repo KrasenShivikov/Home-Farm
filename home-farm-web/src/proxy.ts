@@ -72,6 +72,7 @@ export async function proxy(request: NextRequest) {
   }
 
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
+  const isDashboardRoute = request.nextUrl.pathname.startsWith("/dashboard");
   const authenticatedHome = role === "admin" ? "/admin" : "/dashboard";
 
   if (hasSession && publicRoutes.includes(request.nextUrl.pathname)) {
@@ -88,6 +89,12 @@ export async function proxy(request: NextRequest) {
 
   if (isAdminRoute && role !== "admin") {
     const response = NextResponse.redirect(new URL("/dashboard", request.url));
+    setNoStoreHeaders(response);
+    return response;
+  }
+
+  if (isDashboardRoute && role === "admin") {
+    const response = NextResponse.redirect(new URL("/admin", request.url));
     setNoStoreHeaders(response);
     return response;
   }
