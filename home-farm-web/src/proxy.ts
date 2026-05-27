@@ -2,12 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { updateSession, decrypt } from "@/lib/session";
 
 const publicRoutes = ["/", "/login", "/register"];
+const defaultCorsAllowedOrigins = ["https://home-farm-mobile.netlify.app"];
 
 function getAllowedCorsOrigins() {
-  return (process.env.CORS_ALLOWED_ORIGINS ?? "")
+  const configuredOrigins = (process.env.CORS_ALLOWED_ORIGINS ?? "")
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
+
+  return [...defaultCorsAllowedOrigins, ...configuredOrigins];
 }
 
 function getCorsHeaders(request: NextRequest) {
