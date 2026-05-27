@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node scripts/expo-cli.cjs start",
-    "build": "expo export -p all",
+    "build": "node scripts/expo-cli.cjs export -p all",
     "android": "node scripts/expo-cli.cjs start --android",
     "ios": "node scripts/expo-cli.cjs start --ios",
     "web": "node scripts/expo-cli.cjs start --web",
