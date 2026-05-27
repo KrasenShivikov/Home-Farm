@@ -54,22 +54,20 @@ export async function proxy(request: NextRequest) {
     for (const [key, value] of Object.entries(corsHeaders)) {
       response.headers.set(key, value);
     }
+    setNoStoreHeaders(response);
     return response;
   }
 
   const isPublicRoute = publicRoutes.includes(request.nextUrl.pathname);
 
-  // Extend cookie expiration
-  const sessionResponse = await updateSession(request);
-  const sessionValue = sessionResponse?.headers.get("Set-Cookie");
   const currentCookie = request.cookies.get("session")?.value;
-  const hasSession = !!currentCookie || !!sessionValue;
+  const payload = currentCookie ? await decrypt(currentCookie) : null;
+  const hasSession = !!payload;
 
-  let role = "user";
-  if (hasSession) {
-    const payload = await decrypt(currentCookie || "");
-    if (payload) role = payload.role;
-  }
+  // Extend cookie expiration only after verifying the existing cookie.
+  const sessionResponse = hasSession ? await updateSession(request) : null;
+  const sessionValue = sessionResponse?.headers.get("Set-Cookie");
+  const role = payload?.role ?? "user";
 
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin");
   const isDashboardRoute = request.nextUrl.pathname.startsWith("/dashboard");
@@ -100,9 +98,7 @@ export async function proxy(request: NextRequest) {
   }
 
   const res = NextResponse.next();
-  if (hasSession || !isPublicRoute) {
-    setNoStoreHeaders(res);
-  }
+  setNoStoreHeaders(res);
   if (sessionValue) {
     res.headers.set("Set-Cookie", sessionValue);
   }

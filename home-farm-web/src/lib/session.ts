@@ -43,7 +43,10 @@ export async function createSession(userId: number, name: string, role: string) 
 export async function logout() {
   (await cookies()).set("session", "", {
     expires: new Date(0),
+    maxAge: 0,
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     path: "/",
   });
 }
