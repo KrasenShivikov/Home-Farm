@@ -1,10 +1,9 @@
-import { proxy } from "./src/proxy";
+﻿import { proxy } from "./src/proxy";
 
 export { proxy };
 
 export const config = {
-	matcher: [
-		"/api/:path*",
-		"/((?!api|_next/static|_next/image|favicon.ico|.*\\.svg).*)",
-	],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.svg|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.gif|.*\\.webp).*)"
+  ],
 };

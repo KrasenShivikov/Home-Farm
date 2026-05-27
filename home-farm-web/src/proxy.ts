@@ -38,7 +38,7 @@ function setNoStoreHeaders(response: NextResponse) {
   response.headers.set("Expires", "0");
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/api")) {
     const corsHeaders = getCorsHeaders(request);
 
