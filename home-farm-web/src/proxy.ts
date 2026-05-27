@@ -38,6 +38,33 @@ function setNoStoreHeaders(response: NextResponse) {
   response.headers.set("Expires", "0");
 }
 
+function isRouterCacheRequest(request: NextRequest) {
+  return (
+    request.nextUrl.searchParams.has("_rsc") ||
+    request.headers.has("rsc") ||
+    request.headers.has("next-router-prefetch") ||
+    request.headers.has("next-router-state-tree") ||
+    request.headers.has("next-router-segment-prefetch")
+  );
+}
+
+function shouldRefreshSession(request: NextRequest) {
+  const acceptsHtml = request.headers.get("accept")?.includes("text/html") ?? false;
+
+  return request.method === "GET" && acceptsHtml && !isRouterCacheRequest(request);
+}
+
+function expireSessionCookie(response: NextResponse) {
+  response.cookies.set("session", "", {
+    expires: new Date(0),
+    maxAge: 0,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+  });
+}
+
 export async function proxy(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/api")) {
     const corsHeaders = getCorsHeaders(request);
@@ -64,8 +91,9 @@ export async function proxy(request: NextRequest) {
   const payload = currentCookie ? await decrypt(currentCookie) : null;
   const hasSession = !!payload;
 
-  // Extend cookie expiration only after verifying the existing cookie.
-  const sessionResponse = hasSession ? await updateSession(request) : null;
+  // Extend cookie expiration only for full document navigations. RSC/prefetch
+  // requests can outlive logout and must not resurrect an expired session.
+  const sessionResponse = hasSession && shouldRefreshSession(request) ? await updateSession(request) : null;
   const sessionValue = sessionResponse?.headers.get("Set-Cookie");
   const role = payload?.role ?? "user";
 
@@ -82,6 +110,9 @@ export async function proxy(request: NextRequest) {
   if (!isPublicRoute && !hasSession) {
     const response = NextResponse.redirect(new URL("/login", request.url));
     setNoStoreHeaders(response);
+    if (currentCookie) {
+      expireSessionCookie(response);
+    }
     return response;
   }
 
